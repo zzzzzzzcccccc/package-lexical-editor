@@ -1,0 +1,40 @@
+@use './theme';
+@use './floatLinkEditor';
+
+.root-lexical-editor {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  position: relative;
+
+  .placeholder {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #999;
+    font-size: 14px;
+  }
+
+  .content {
+    margin: 0;
+    padding: 10px 6px;
+    box-sizing: border-box;
+    line-height: 1.5;
+    max-width: 100%;
+    max-height: 100%;
+    outline: none;
+    overflow: auto;
+  }
+}
+
+.tree-view-output {
+  width: 100%;
+  background-color: #000;
+  color: #fff;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}

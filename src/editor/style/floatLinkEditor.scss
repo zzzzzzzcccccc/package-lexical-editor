@@ -1,0 +1,106 @@
+.root-lexical-editor {
+  .link-editor {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    max-width: 400px;
+    width: 100%;
+    opacity: 0;
+    background-color: #fff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 0 0 8px 8px;
+    transition: opacity 0.5s;
+    will-change: transform;
+
+    .link-view {
+      display: block;
+      width: calc(100% - 24px);
+      margin: 8px 12px;
+      padding: 8px 12px;
+      border-radius: 15px;
+      font-size: 15px;
+      color: #050505;
+      border: 0;
+      outline: 0;
+      position: relative;
+      font-family: inherit;
+
+      a {
+        display: block;
+        word-break: break-word;
+        width: calc(100% - 33px);
+      }
+
+      .link-edit {
+        width: 35px;
+        background-image: url(data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxNicgaGVpZ2h0PScxNicgZmlsbD0nY3VycmVudENvbG9yJyBjbGFzcz0nYmkgYmktcGVuY2lsLWZpbGwnPjxwYXRoIGQ9J00xMi44NTQuMTQ2YS41LjUgMCAwIDAtLjcwNyAwTDEwLjUgMS43OTMgMTQuMjA3IDUuNWwxLjY0Ny0xLjY0NmEuNS41IDAgMCAwIDAtLjcwOGwtMy0zem0uNjQ2IDYuMDYxTDkuNzkzIDIuNSAzLjI5MyA5SDMuNWEuNS41IDAgMCAxIC41LjV2LjVoLjVhLjUuNSAwIDAgMSAuNS41di41aC41YS41LjUgMCAwIDEgLjUuNXYuNWguNWEuNS41IDAgMCAxIC41LjV2LjIwN2w2LjUtNi41em0tNy40NjggNy40NjhBLjUuNSAwIDAgMSA2IDEzLjVWMTNoLS41YS41LjUgMCAwIDEtLjUtLjVWMTJoLS41YS41LjUgMCAwIDEtLjUtLjVWMTFoLS41YS41LjUgMCAwIDEtLjUtLjVWMTBoLS41YS40OTkuNDk5IDAgMCAxLS4xNzUtLjAzMmwtLjE3OS4xNzhhLjUuNSAwIDAgMC0uMTEuMTY4bC0yIDVhLjUuNSAwIDAgMCAuNjUuNjVsNS0yYS41LjUgMCAwIDAgLjE2OC0uMTFsLjE3OC0uMTc4eicvPjwvc3ZnPg==);
+        background-size: 16px;
+        background-position: center;
+        background-repeat: no-repeat;
+        vertical-align: -0.25em;
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        cursor: pointer;
+        box-sizing: border-box;
+        border: 0;
+        background-color: transparent;
+      }
+    }
+
+    .link-input {
+      display: block;
+      width: calc(100% - 75px);
+      box-sizing: border-box;
+      margin: 12px;
+      padding: 8px 12px;
+      border-radius: 15px;
+      background-color: #eee;
+      font-size: 15px;
+      color: #050505;
+      border: 0;
+      outline: 0;
+      position: relative;
+      font-family: inherit;
+    }
+
+    .link-cancel {
+      background-image: url(data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA1MTIgNTEyJz48IS0tISBGb250IEF3ZXNvbWUgUHJvIDYuMS4xIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlIChDb21tZXJjaWFsIExpY2Vuc2UpIENvcHlyaWdodCAyMDIyIEZvbnRpY29ucywgSW5jLi0tPjxwYXRoIGQ9J00wIDI1NkMwIDExNC42IDExNC42IDAgMjU2IDBzMjU2IDExNC42IDI1NiAyNTYtMTE0LjYgMjU2LTI1NiAyNTZTMCAzOTcuNCAwIDI1NnptMTc1LTQ3LjkgNDcuMSA0N0wxNzUgMzAzYy05LjMgOS40LTkuMyAyNC42IDAgMzMuMSA5LjQgMTAuMiAyNC42IDEwLjIgMzMuMSAwbDQ3LTQ2LjIgNDcuOSA0Ni4yYzkuNCAxMC4yIDI0LjYgMTAuMiAzMy4xIDAgMTAuMi04LjUgMTAuMi0yMy43IDAtMzMuMWwtNDYuMi00Ny45IDQ2LjItNDdjMTAuMi04LjUgMTAuMi0yMy43IDAtMzMuMS04LjUtOS4zLTIzLjctOS4zLTMzLjEgMGwtNDcuOSA0Ny4xLTQ3LTQ3LjFjLTguNS05LjMtMjMuNy05LjMtMzMuMSAwLTkuMyA5LjQtOS4zIDI0LjYgMCAzMy4xeicvPjwvc3ZnPg==);
+      background-size: 16px;
+      background-repeat: no-repeat;
+      width: 35px;
+      vertical-align: -0.25em;
+      margin-right: 28px;
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      bottom: 0px;
+      cursor: pointer;
+      background-position: center center;
+      box-sizing: border-box;
+      border: 0;
+      background-color: transparent;
+    }
+
+    .link-confirm {
+      background-image: url(data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA1MCA1MCc+PGNpcmNsZSBjeD0nMjUnIGN5PScyNScgcj0nMjUnIGZpbGw9JyMwMDAnLz48cGF0aCBmaWxsPSdub25lJyBzdHJva2U9JyNmZmYnIHN0cm9rZS13aWR0aD0nNCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJyBzdHJva2UtbGluZWpvaW49J3JvdW5kJyBzdHJva2UtbWl0ZXJsaW1pdD0nMTAnIGQ9J00zOCAxNSAyMiAzM2wtMTAtOCcvPjwvc3ZnPg==);
+      background-size: 16px;
+      background-repeat: no-repeat;
+      width: 35px;
+      vertical-align: -0.25em;
+      margin-right: 2px;
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      bottom: 0px;
+      cursor: pointer;
+      background-position: center center;
+      box-sizing: border-box;
+      border: 0;
+      background-color: transparent;
+    }
+  }
+}
