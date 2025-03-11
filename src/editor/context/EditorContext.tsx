@@ -1,74 +1,155 @@
 import React, { createContext } from 'react'
 import type { LexicalEditor } from 'lexical'
 import { useEditorContextProvider, type EditorContextProviderOptions } from '../hooks'
-import { MISS_EDITOR_CONTEXT_PROVIDER, BLOCK, ALIGN } from '../constants'
+import { BLOCK, ALIGN } from '../constants'
+import type { EditorFocusOptions, ValueSource } from '../types'
 
 export interface EditorContext {
+  _injected: boolean
   anchor: HTMLElement | null
   editor: LexicalEditor
   activeEditor: LexicalEditor
+  fontFamily: string
+  fontSize: string
+  fontColor: string
+  backgroundColor: string
   link: boolean
   block: keyof typeof BLOCK
   align: (typeof ALIGN)[keyof typeof ALIGN]
   bold: boolean
   italic: boolean
   underline: boolean
+  lowercase: boolean
+  uppercase: boolean
+  capitalize: boolean
+  highlight: boolean
+  strikethrough: boolean
+  code: boolean
   enableRichText: boolean
   enableText: boolean
   readOnly: boolean
   disabled: boolean
   editLink: boolean
+  contentLength: number
+  empty: boolean
   onAnchor: (element: HTMLElement | null) => void
   updateActiveEditor: (editor: LexicalEditor) => void
+  updateFontSize: (target: string) => void
+  updateFontFamily: (target: string) => void
+  updateFontColor: (target: string) => void
+  updateBackgroundColor: (target: string) => void
   updateBlock: (target: keyof typeof BLOCK) => void
   updateAlign: (target: (typeof ALIGN)[keyof typeof ALIGN]) => void
   toggleLink: (target?: boolean) => void
   toggleBold: (target?: boolean) => void
   toggleItalic: (target?: boolean) => void
   toggleUnderline: (target?: boolean) => void
+  toggleCode: (target?: boolean) => void
   toggleEditLink: (target?: boolean) => void
+  toggleLowercase: (target?: boolean) => void
+  toggleUppercase: (target?: boolean) => void
+  toggleCapitalize: (target?: boolean) => void
+  toggleHighlight: (target?: boolean) => void
+  toggleStrikethrough: (target?: boolean) => void
   formatBlock: (target: keyof typeof BLOCK) => void
   formatAlign: (target: (typeof ALIGN)[keyof typeof ALIGN]) => void
+  formatFontColor: (target: string) => void
+  formatBackgroundColor: (target: string) => void
+  formatFontFamily: (target: string) => void
+  formatFontSize: (target: string) => void
   formatLink: () => void
   formatBold: () => void
   formatItalic: () => void
   formatUnderline: () => void
+  formatLowercase: () => void
+  formatUppercase: () => void
+  formatCapitalize: () => void
+  formatHighlight: () => void
+  formatStrikethrough: () => void
+  formatCode: () => void
   clearFormatting: () => void
+  updateValue: (value: string, source: ValueSource) => void
+  insertValue: (value: string, source: ValueSource) => void
+  clearValue: () => void
+  updateContentLength: (target: number) => void
+  updateEmpty: (target: boolean) => void
+  focus: (callbackFn?: () => void, options?: EditorFocusOptions) => void
+  blur: () => void
 }
 
 export interface EditorContextProviderProps extends EditorContextProviderOptions {
   children?: React.ReactNode
 }
 
-const intialEditorContext: Omit<EditorContext, 'editor' | 'activeEditor'> = {
+export const intialEditorContext: Omit<EditorContext, 'editor' | 'activeEditor'> = {
+  _injected: false,
   anchor: null,
+  fontColor: '#000000',
+  backgroundColor: '#ffffff',
+  fontFamily: 'Arial',
+  fontSize: '16px',
   link: false,
-  block: 'paragraph',
+  block: 'root',
   align: ALIGN.left,
   bold: false,
   italic: false,
+  code: false,
   underline: false,
+  lowercase: false,
+  uppercase: false,
+  capitalize: false,
+  highlight: false,
+  strikethrough: false,
   enableRichText: false,
   enableText: false,
   readOnly: false,
   disabled: false,
   editLink: false,
-  onAnchor: () => new Error(MISS_EDITOR_CONTEXT_PROVIDER),
-  updateActiveEditor: () => new Error(MISS_EDITOR_CONTEXT_PROVIDER),
-  updateBlock: () => new Error(MISS_EDITOR_CONTEXT_PROVIDER),
-  updateAlign: () => new Error(MISS_EDITOR_CONTEXT_PROVIDER),
-  toggleLink: () => new Error(MISS_EDITOR_CONTEXT_PROVIDER),
-  toggleBold: () => new Error(MISS_EDITOR_CONTEXT_PROVIDER),
-  toggleItalic: () => new Error(MISS_EDITOR_CONTEXT_PROVIDER),
-  toggleUnderline: () => new Error(MISS_EDITOR_CONTEXT_PROVIDER),
-  toggleEditLink: () => new Error(MISS_EDITOR_CONTEXT_PROVIDER),
-  formatBlock: () => new Error(MISS_EDITOR_CONTEXT_PROVIDER),
-  formatAlign: () => new Error(MISS_EDITOR_CONTEXT_PROVIDER),
-  formatLink: () => new Error(MISS_EDITOR_CONTEXT_PROVIDER),
-  formatBold: () => new Error(MISS_EDITOR_CONTEXT_PROVIDER),
-  formatItalic: () => new Error(MISS_EDITOR_CONTEXT_PROVIDER),
-  formatUnderline: () => new Error(MISS_EDITOR_CONTEXT_PROVIDER),
-  clearFormatting: () => new Error(MISS_EDITOR_CONTEXT_PROVIDER)
+  contentLength: 0,
+  empty: true,
+  onAnchor: () => null,
+  updateActiveEditor: () => null,
+  updateFontColor: () => null,
+  updateBackgroundColor: () => null,
+  updateFontSize: () => null,
+  updateFontFamily: () => null,
+  updateBlock: () => null,
+  updateAlign: () => null,
+  toggleLink: () => null,
+  toggleBold: () => null,
+  toggleItalic: () => null,
+  toggleUnderline: () => null,
+  toggleLowercase: () => null,
+  toggleUppercase: () => null,
+  toggleCapitalize: () => null,
+  toggleHighlight: () => null,
+  toggleStrikethrough: () => null,
+  toggleCode: () => null,
+  toggleEditLink: () => null,
+  formatBlock: () => null,
+  formatAlign: () => null,
+  formatFontColor: () => null,
+  formatBackgroundColor: () => null,
+  formatFontFamily: () => null,
+  formatFontSize: () => null,
+  formatLink: () => null,
+  formatBold: () => null,
+  formatItalic: () => null,
+  formatUnderline: () => null,
+  formatLowercase: () => null,
+  formatUppercase: () => null,
+  formatCapitalize: () => null,
+  formatHighlight: () => null,
+  formatStrikethrough: () => null,
+  formatCode: () => null,
+  clearFormatting: () => null,
+  updateValue: () => null,
+  insertValue: () => null,
+  clearValue: () => null,
+  updateContentLength: () => null,
+  updateEmpty: () => null,
+  focus: () => null,
+  blur: () => null
 }
 
 export const ReactEditorContext = createContext<EditorContext>(intialEditorContext as EditorContext)

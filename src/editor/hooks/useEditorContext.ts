@@ -2,7 +2,13 @@ import { useContext } from 'react'
 import { ReactEditorContext } from '../context/EditorContext'
 
 export function useEditorContext() {
-  return useContext(ReactEditorContext)
+  const context = useContext(ReactEditorContext)
+
+  if (!context._injected) {
+    throw new Error('useEditorContext must be used within an EditorContextProvider')
+  }
+
+  return context
 }
 
 export function useEditor() {
@@ -11,18 +17,45 @@ export function useEditor() {
     bold,
     italic,
     underline,
+    lowercase,
+    uppercase,
+    capitalize,
+    highlight,
+    strikethrough,
+    code,
     align,
+    fontColor,
+    backgroundColor,
+    fontSize,
+    fontFamily,
     link,
     disabled,
     readOnly,
     editLink,
+    contentLength,
+    empty,
     formatLink,
     formatAlign,
+    formatFontColor,
+    formatBackgroundColor,
+    formatFontSize,
+    formatFontFamily,
     formatBlock,
     formatBold,
     formatItalic,
     formatUnderline,
-    clearFormatting
+    formatLowercase,
+    formatUppercase,
+    formatCapitalize,
+    formatHighlight,
+    formatStrikethrough,
+    formatCode,
+    clearFormatting,
+    updateValue,
+    insertValue,
+    clearValue,
+    focus,
+    blur
   } = useEditorContext()
 
   return {
@@ -30,17 +63,44 @@ export function useEditor() {
     bold,
     italic,
     underline,
+    lowercase,
+    uppercase,
+    capitalize,
+    highlight,
+    strikethrough,
+    code,
     align,
+    fontColor,
+    backgroundColor,
+    fontSize,
+    fontFamily,
     link,
     disabled,
     readOnly,
     editLink,
+    contentLength,
+    empty,
     formatLink,
     formatAlign,
+    formatFontColor,
+    formatBackgroundColor,
+    formatFontSize,
+    formatFontFamily,
     formatBlock,
     formatBold,
     formatItalic,
     formatUnderline,
-    clearFormatting
+    formatLowercase,
+    formatUppercase,
+    formatCapitalize,
+    formatHighlight,
+    formatStrikethrough,
+    formatCode,
+    clearFormatting,
+    updateValue,
+    insertValue,
+    clearValue,
+    focus,
+    blur
   }
 }

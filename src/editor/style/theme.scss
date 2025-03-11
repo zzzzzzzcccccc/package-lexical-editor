@@ -21,20 +21,33 @@
     padding-left: 16px;
   }
   .editor-h1 {
-    font-size: 24px;
-    color: rgb(5, 5, 5);
+    font-size: 32px;
     font-weight: 400;
     margin: 0;
   }
   .editor-h2 {
-    font-size: 15px;
-    color: rgb(101, 103, 107);
+    font-size: 24px;
     font-weight: 700;
     margin: 0;
     text-transform: uppercase;
   }
   .editor-h3 {
-    font-size: 12px;
+    font-size: 19px;
+    margin: 0;
+    text-transform: uppercase;
+  }
+  .editor-h4 {
+    font-size: 16px;
+    margin: 0;
+    text-transform: uppercase;
+  }
+  .editor-h5 {
+    font-size: 14px;
+    margin: 0;
+    text-transform: uppercase;
+  }
+  .editor-h6 {
+    font-size: 11px;
     margin: 0;
     text-transform: uppercase;
   }
@@ -43,9 +56,6 @@
   }
   .editor-textBold {
     font-weight: bold;
-  }
-  .editor-paragraph mark {
-    background-color: unset;
   }
   .editor-textHighlight {
     background: rgba(255, 212, 0, 0.14);

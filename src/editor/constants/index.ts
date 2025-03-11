@@ -1,7 +1,5 @@
 import type { EditorThemeClasses } from 'lexical'
 
-export const MISS_EDITOR_CONTEXT_PROVIDER = 'Please provide a EditorContextProvider'
-
 export const EDIT_MODE = {
   text: 'text',
   richText: 'richText'
@@ -120,6 +118,7 @@ export const DEFAULT_THEME: EditorThemeClasses = {
 }
 
 export const BLOCK = {
+  root: 'Root',
   bullet: 'Bulleted List',
   check: 'Check List',
   code: 'Code Block',
@@ -142,3 +141,8 @@ export const ALIGN = {
   end: 'end',
   justify: 'justify'
 } as const
+
+export const VALUE_SOURCE = {
+  json: 'json',
+  html: 'html'
+}

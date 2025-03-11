@@ -27,6 +27,7 @@ body,
   width: 100%;
   display: flex;
   gap: 2px;
+  flex-wrap: wrap;
 
   select {
     padding: 5px;
@@ -45,4 +46,19 @@ body,
   .active {
     background-color: #ccc;
   }
+}
+
+.footer {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+}
+
+.actions {
+  width: 80%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 4px;
 }

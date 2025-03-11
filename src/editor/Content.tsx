@@ -1,10 +1,11 @@
+import { forwardRef } from 'react'
 import { useEditorContext } from './hooks'
 import { TreeViewPlugin } from './plugins'
 import { RichTextEditor } from './components'
 
-import type { ContentProps } from './types'
+import type { ContentProps, EditorRef } from './types'
 
-export function Content(props: ContentProps) {
+export const Content = forwardRef<EditorRef, ContentProps>((props, ref) => {
   const {
     className,
     style,
@@ -14,7 +15,13 @@ export function Content(props: ContentProps) {
     headerSlot,
     footerSlot,
     editorClassName,
-    editorStyle
+    editorStyle,
+    ignoreSelectionChange,
+    outputValueSource,
+    maxLength,
+    enableMarkdownShortcut,
+    enableDraggableBlock,
+    onChange
   } = props
 
   const { onAnchor } = useEditorContext()
@@ -31,9 +38,16 @@ export function Content(props: ContentProps) {
           editorClassName={editorClassName}
           headerSlot={headerSlot}
           footerSlot={footerSlot}
+          ignoreSelectionChange={ignoreSelectionChange}
+          outputValueSource={outputValueSource}
+          maxLength={maxLength}
+          onChange={onChange}
+          enableMarkdownShortcut={enableMarkdownShortcut}
+          enableDraggableBlock={enableDraggableBlock}
+          ref={ref}
         />
       </div>
       {debug && <TreeViewPlugin />}
     </>
   )
-}
+})

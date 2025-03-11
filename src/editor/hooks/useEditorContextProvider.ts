@@ -1,15 +1,18 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import {
   $createParagraphNode,
+  $getRoot,
   $getSelection,
+  $insertNodes,
   $isRangeSelection,
   $isTextNode,
   FORMAT_ELEMENT_COMMAND,
   FORMAT_TEXT_COMMAND,
+  LexicalNode,
   type LexicalEditor
 } from 'lexical'
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
-import { $setBlocksType } from '@lexical/selection'
+import { $patchStyleText, $setBlocksType } from '@lexical/selection'
 import {
   $isListItemNode,
   $isListNode,
@@ -19,13 +22,16 @@ import {
 } from '@lexical/list'
 import { $createHeadingNode, $createQuoteNode, $isHeadingNode, $isQuoteNode, HeadingTagType } from '@lexical/rich-text'
 import { $isDecoratorBlockNode } from '@lexical/react/LexicalDecoratorBlockNode'
-import { TOGGLE_LINK_COMMAND } from '@lexical/link'
+import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link'
+import { $generateHtmlFromNodes, $generateNodesFromDOM } from '@lexical/html'
 import { $getNearestBlockElementAncestorOrThrow } from '@lexical/utils'
 
-import { EDIT_MODE, BLOCK, ALIGN } from '../constants'
-import { EditorProps } from '../types'
-import type { EditorContext } from '../context/EditorContext'
+import { EDIT_MODE, BLOCK, ALIGN, VALUE_SOURCE } from '../constants'
+import type { EditorFocusOptions, EditorProps, ValueSource } from '../types'
+import { intialEditorContext, type EditorContext } from '../context/EditorContext'
 import { sanitizeUrl } from '../utils/url'
+import { filterDomFromString } from '../utils/dom'
+import { getSelectedNode } from '../utils/getSelectedNode'
 
 export type EditorContextProviderOptions = Pick<EditorProps, 'editMode' | 'disabled' | 'readOnly'>
 
@@ -34,15 +40,29 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
 
   const [editor] = useLexicalComposerContext()
 
-  const [anchor, setAnchor] = useState<HTMLElement | null>(null)
+  const [anchor, setAnchor] = useState<HTMLElement | null>(intialEditorContext.anchor)
   const [activeEditor, setActiveEditor] = useState(editor)
-  const [link, setLink] = useState(false)
-  const [block, setBlock] = useState<EditorContext['block']>('paragraph')
-  const [align, setAlign] = useState<EditorContext['align']>(ALIGN.left)
-  const [bold, setBold] = useState(false)
-  const [italic, setItalic] = useState(false)
-  const [underline, setUnderline] = useState(false)
-  const [editLink, setEditLink] = useState(false)
+
+  const [fontColor, setFontColor] = useState(intialEditorContext.fontColor)
+  const [backgroundColor, setBackgroundColor] = useState(intialEditorContext.backgroundColor)
+  const [fontSize, setFontSize] = useState(intialEditorContext.fontSize)
+  const [fontFamily, setFontFamily] = useState(intialEditorContext.fontFamily)
+  const [link, setLink] = useState(intialEditorContext.link)
+  const [block, setBlock] = useState<EditorContext['block']>(intialEditorContext.block)
+  const [align, setAlign] = useState<EditorContext['align']>(intialEditorContext.align)
+  const [bold, setBold] = useState(intialEditorContext.bold)
+  const [italic, setItalic] = useState(intialEditorContext.italic)
+  const [underline, setUnderline] = useState(intialEditorContext.underline)
+  const [lowercase, setLowercase] = useState(intialEditorContext.lowercase)
+  const [uppercase, setUppercase] = useState(intialEditorContext.uppercase)
+  const [capitalize, setCapitalize] = useState(intialEditorContext.capitalize)
+  const [highlight, setHighlight] = useState(intialEditorContext.highlight)
+  const [strikethrough, setStrikethrough] = useState(intialEditorContext.strikethrough)
+  const [code, setCode] = useState(intialEditorContext.code)
+
+  const [contentLength, setContentLength] = useState(intialEditorContext.contentLength)
+  const [empty, setEmpty] = useState(intialEditorContext.empty)
+  const [editLink, setEditLink] = useState(intialEditorContext.editLink)
 
   const enableRichText = editMode === EDIT_MODE.richText
   const enableText = editMode === EDIT_MODE.text
@@ -58,6 +78,22 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
 
   const updateActiveEditor = useCallback((editor: LexicalEditor) => {
     setActiveEditor(editor)
+  }, [])
+
+  const updateFontColor = useCallback((target: string) => {
+    setFontColor(target)
+  }, [])
+
+  const updateBackgroundColor = useCallback((target: string) => {
+    setBackgroundColor(target)
+  }, [])
+
+  const updateFontSize = useCallback((target: string) => {
+    setFontSize(target)
+  }, [])
+
+  const updateFontFamily = useCallback((target: string) => {
+    setFontFamily(target)
   }, [])
 
   const updateBlock = useCallback((target: keyof typeof BLOCK) => {
@@ -92,6 +128,30 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
 
   const toggleUnderline = useCallback((target?: boolean) => {
     setUnderline((prev) => (typeof target === 'boolean' ? target : !prev))
+  }, [])
+
+  const toggleLowercase = useCallback((target?: boolean) => {
+    setLowercase((prev) => (typeof target === 'boolean' ? target : !prev))
+  }, [])
+
+  const toggleUppercase = useCallback((target?: boolean) => {
+    setUppercase((prev) => (typeof target === 'boolean' ? target : !prev))
+  }, [])
+
+  const toggleCapitalize = useCallback((target?: boolean) => {
+    setCapitalize((prev) => (typeof target === 'boolean' ? target : !prev))
+  }, [])
+
+  const toggleHighlight = useCallback((target?: boolean) => {
+    setHighlight((prev) => (typeof target === 'boolean' ? target : !prev))
+  }, [])
+
+  const toggleStrikethrough = useCallback((target?: boolean) => {
+    setStrikethrough((prev) => (typeof target === 'boolean' ? target : !prev))
+  }, [])
+
+  const toggleCode = useCallback((target?: boolean) => {
+    setCode((prev) => (typeof target === 'boolean' ? target : !prev))
   }, [])
 
   const toggleEditLink = useCallback((target?: boolean) => {
@@ -145,6 +205,7 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
         if (block === 'check') {
           foramtParagraph()
         } else {
+          console.log('run check list')
           activeEditor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, undefined)
         }
 
@@ -179,6 +240,54 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
     [activeEditor]
   )
 
+  const formatFontColor = useCallback(
+    (target: string) => {
+      activeEditor.update(() => {
+        const selection = $getSelection()
+        if (selection !== null) {
+          $patchStyleText(selection, { color: target })
+        }
+      })
+    },
+    [activeEditor]
+  )
+
+  const formatBackgroundColor = useCallback(
+    (target: string) => {
+      activeEditor.update(() => {
+        const selection = $getSelection()
+        if (selection !== null) {
+          $patchStyleText(selection, { 'background-color': target })
+        }
+      })
+    },
+    [activeEditor]
+  )
+
+  const formatFontSize = useCallback(
+    (target: string) => {
+      activeEditor.update(() => {
+        const selection = $getSelection()
+        if (selection !== null) {
+          $patchStyleText(selection, { 'font-size': target })
+        }
+      })
+    },
+    [activeEditor]
+  )
+
+  const formatFontFamily = useCallback(
+    (target: string) => {
+      activeEditor.update(() => {
+        const selection = $getSelection()
+        if (selection !== null) {
+          $patchStyleText(selection, { 'font-family': target })
+        }
+      })
+    },
+    [activeEditor]
+  )
+
   const formatLink = useCallback(() => {
     if (!link) {
       toggleEditLink(true)
@@ -199,6 +308,30 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
 
   const formatUnderline = useCallback(() => {
     activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline')
+  }, [activeEditor])
+
+  const formatLowercase = useCallback(() => {
+    activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'lowercase')
+  }, [activeEditor])
+
+  const formatUppercase = useCallback(() => {
+    activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'uppercase')
+  }, [activeEditor])
+
+  const formatCapitalize = useCallback(() => {
+    activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'capitalize')
+  }, [activeEditor])
+
+  const formatHighlight = useCallback(() => {
+    activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'highlight')
+  }, [activeEditor])
+
+  const formatStrikethrough = useCallback(() => {
+    activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough')
+  }, [activeEditor])
+
+  const formatCode = useCallback(() => {
+    activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code')
   }, [activeEditor])
 
   const clearFormatting = useCallback(() => {
@@ -261,36 +394,167 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
     })
   }, [activeEditor, toggleEditLink, toggleLink])
 
+  const updateValue = useCallback(
+    (value: string, source: ValueSource) => {
+      activeEditor.update(() => {
+        const root = $getRoot()
+        root.clear()
+
+        if (source === VALUE_SOURCE.html) {
+          const dom = filterDomFromString(value as string)
+          const nodes = $generateNodesFromDOM(activeEditor, dom)
+          root.select()
+          $insertNodes(nodes)
+        } else {
+          const state = activeEditor.parseEditorState(value)
+          activeEditor.setEditorState(state)
+        }
+      })
+    },
+    [activeEditor]
+  )
+
+  const insertValue = useCallback(
+    (value: string, source: ValueSource) => {
+      activeEditor.update(() => {
+        let nodes: LexicalNode[] = []
+
+        if (source === VALUE_SOURCE.html) {
+          const dom = filterDomFromString(value as string)
+          nodes = $generateNodesFromDOM(activeEditor, dom)
+        } else {
+          const state = activeEditor.parseEditorState(value)
+          const html = state.read(() => $generateHtmlFromNodes(activeEditor))
+          const dom = filterDomFromString(html as string)
+          nodes = $generateNodesFromDOM(activeEditor, dom)
+        }
+
+        const selection = $getSelection()
+
+        if ($isRangeSelection(selection)) {
+          const node = getSelectedNode(selection)
+          const parent = node.getParent()
+          const grandpa = parent?.getParent()
+          if ($isLinkNode(parent)) {
+            if (grandpa) {
+              nodes.forEach((node) => {
+                grandpa.append(node)
+              })
+            }
+          } else {
+            selection.insertNodes(nodes)
+          }
+        } else {
+          $insertNodes(nodes)
+        }
+      })
+    },
+    [activeEditor]
+  )
+
+  const clearValue = useCallback(() => {
+    activeEditor.update(() => {
+      const root = $getRoot()
+      root.clear()
+    })
+  }, [activeEditor])
+
+  const updateContentLength = useCallback((length: number) => {
+    setContentLength(length)
+  }, [])
+
+  const updateEmpty = useCallback((target: boolean) => {
+    setEmpty(target)
+  }, [])
+
+  const focus = useCallback(
+    (callbackFn?: () => void, options?: EditorFocusOptions) => {
+      activeEditor.focus(callbackFn, options)
+    },
+    [activeEditor]
+  )
+
+  const blur = useCallback(() => {
+    activeEditor.blur()
+  }, [activeEditor])
+
+  useEffect(() => {
+    if (readOnly || disabled) {
+      toggleEditLink(false)
+    }
+    activeEditor.setEditable(!readOnly && !disabled)
+  }, [readOnly, disabled, toggleEditLink, activeEditor])
+
   return {
+    _injected: true,
     anchor,
     editor,
     activeEditor,
+    fontColor,
+    backgroundColor,
+    fontFamily,
+    fontSize,
     link,
     block,
     align,
     bold,
     italic,
     underline,
+    lowercase,
+    uppercase,
+    capitalize,
+    highlight,
+    strikethrough,
+    code,
     enableRichText,
     enableText,
     readOnly,
     disabled,
     editLink,
+    contentLength,
+    empty,
     onAnchor,
     updateActiveEditor,
+    updateFontColor,
+    updateBackgroundColor,
+    updateFontSize,
+    updateFontFamily,
     updateBlock,
     updateAlign,
     toggleLink,
     toggleBold,
     toggleItalic,
     toggleUnderline,
+    toggleLowercase,
+    toggleUppercase,
+    toggleCapitalize,
+    toggleHighlight,
+    toggleStrikethrough,
+    toggleCode,
     toggleEditLink,
     formatBlock,
     formatAlign,
+    formatFontColor,
+    formatBackgroundColor,
+    formatFontSize,
+    formatFontFamily,
     formatLink,
     formatBold,
     formatItalic,
     formatUnderline,
-    clearFormatting
+    formatLowercase,
+    formatUppercase,
+    formatCapitalize,
+    formatHighlight,
+    formatStrikethrough,
+    formatCode,
+    clearFormatting,
+    updateValue,
+    insertValue,
+    clearValue,
+    updateContentLength,
+    updateEmpty,
+    focus,
+    blur
   }
 }

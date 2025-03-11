@@ -3,6 +3,7 @@ import { $findMatchingParent, $getNearestNodeOfType, mergeRegister } from '@lexi
 import { $isLinkNode } from '@lexical/link'
 import { $isListNode, ListNode } from '@lexical/list'
 import { $isHeadingNode } from '@lexical/rich-text'
+import { $getSelectionStyleValueForProperty } from '@lexical/selection'
 import {
   $getSelection,
   $isElementNode,
@@ -14,17 +15,28 @@ import {
 
 import { useEditorContext } from '../hooks'
 import { getSelectedNode } from '../utils/getSelectedNode'
+import { intialEditorContext } from '../context/EditorContext'
 
 export function ListenerFormatStatePlugin() {
   const {
     activeEditor,
     updateActiveEditor,
+    updateFontColor,
+    updateBackgroundColor,
+    updateFontSize,
+    updateFontFamily,
     toggleLink,
     updateBlock,
     updateAlign,
     toggleBold,
     toggleItalic,
-    toggleUnderline
+    toggleUnderline,
+    toggleLowercase,
+    toggleUppercase,
+    toggleCapitalize,
+    toggleHighlight,
+    toggleStrikethrough,
+    toggleCode
   } = useEditorContext()
 
   const update = useCallback(() => {
@@ -67,6 +79,13 @@ export function ListenerFormatStatePlugin() {
         }
       }
 
+      updateFontColor($getSelectionStyleValueForProperty(selection, 'color', intialEditorContext.fontColor))
+      updateBackgroundColor(
+        $getSelectionStyleValueForProperty(selection, 'background-color', intialEditorContext.backgroundColor)
+      )
+      updateFontSize($getSelectionStyleValueForProperty(selection, 'font-size', intialEditorContext.fontSize))
+      updateFontFamily($getSelectionStyleValueForProperty(selection, 'font-family', intialEditorContext.fontFamily))
+
       const matchingParent = $isLinkNode(parent)
         ? $findMatchingParent(node, (parentNode) => $isElementNode(parentNode) && !parentNode.isInline())
         : null
@@ -84,8 +103,32 @@ export function ListenerFormatStatePlugin() {
       toggleBold(selection.hasFormat('bold'))
       toggleItalic(selection.hasFormat('italic'))
       toggleUnderline(selection.hasFormat('underline'))
+      toggleLowercase(selection.hasFormat('lowercase'))
+      toggleUppercase(selection.hasFormat('uppercase'))
+      toggleCapitalize(selection.hasFormat('capitalize'))
+      toggleHighlight(selection.hasFormat('highlight'))
+      toggleStrikethrough(selection.hasFormat('strikethrough'))
+      toggleCode(selection.hasFormat('code'))
     }
-  }, [activeEditor, toggleBold, toggleItalic, toggleLink, toggleUnderline, updateAlign, updateBlock])
+  }, [
+    activeEditor,
+    toggleBold,
+    toggleCapitalize,
+    toggleCode,
+    toggleHighlight,
+    toggleItalic,
+    toggleLink,
+    toggleLowercase,
+    toggleStrikethrough,
+    toggleUnderline,
+    toggleUppercase,
+    updateAlign,
+    updateBackgroundColor,
+    updateBlock,
+    updateFontColor,
+    updateFontFamily,
+    updateFontSize
+  ])
 
   useEffect(() => {
     activeEditor.getEditorState().read(() => {

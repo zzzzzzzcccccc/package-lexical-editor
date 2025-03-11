@@ -1,17 +1,18 @@
-import { useMemo } from 'react'
+import { useMemo, forwardRef } from 'react'
 import { LexicalComposer, type InitialConfigType } from '@lexical/react/LexicalComposer'
 
 import { EditorContextProvider } from './context/EditorContext'
 import { Content } from './Content'
 import { DEFAULT_THEME } from './constants'
 import { defaultNodes } from './nodes'
+import { buildImportMap } from './utils/dom'
 
-import { EditorProps } from './types'
+import type { EditorProps, EditorRef } from './types'
 
 import './style/index.scss'
 
-export function Editor(props: EditorProps) {
-  const { theme, onError, nodes = [], ...rest } = props
+export const Editor = forwardRef<EditorRef, EditorProps>((props, ref) => {
+  const { theme, onError, nodes = [], readOnly, editMode, disabled, ...rest } = props
 
   const finalNodes = useMemo(() => defaultNodes.concat(nodes), [nodes])
   const initialConfig: InitialConfigType = {
@@ -21,6 +22,9 @@ export function Editor(props: EditorProps) {
       ...theme
     },
     nodes: finalNodes,
+    html: {
+      import: buildImportMap()
+    },
     onError: (error, editor) => {
       onError?.(error, editor)
     }
@@ -28,9 +32,9 @@ export function Editor(props: EditorProps) {
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <EditorContextProvider>
-        <Content {...rest} />
+      <EditorContextProvider editMode={editMode} readOnly={readOnly} disabled={disabled}>
+        <Content {...rest} ref={ref} />
       </EditorContextProvider>
     </LexicalComposer>
   )
-}
+})
