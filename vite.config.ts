@@ -5,6 +5,9 @@ import babel from '@rollup/plugin-babel'
 // https://vite.dev/config/
 export default defineConfig({
   base: './',
+  build: {
+    outDir: 'build'
+  },
   plugins: [
     babel({
       exclude: '/**/node_modules/**',
