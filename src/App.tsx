@@ -109,6 +109,8 @@ function Toolbar() {
 
   return (
     <>
+      <a href='https://github.com/zzzzzzzcccccc/package-lexical-editor'>Github</a>
+
       <div className='toolbar'>
         <select
           disabled={disabled}
