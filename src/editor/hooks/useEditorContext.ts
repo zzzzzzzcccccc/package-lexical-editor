@@ -53,6 +53,7 @@ export function useEditor() {
     clearFormatting,
     updateValue,
     insertValue,
+    insertImage,
     clearValue,
     focus,
     blur
@@ -99,6 +100,7 @@ export function useEditor() {
     clearFormatting,
     updateValue,
     insertValue,
+    insertImage,
     clearValue,
     focus,
     blur

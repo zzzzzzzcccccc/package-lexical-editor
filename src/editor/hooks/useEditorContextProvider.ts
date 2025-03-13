@@ -1,6 +1,7 @@
 import { useCallback, useState, useEffect } from 'react'
 import {
   $createParagraphNode,
+  $createTextNode,
   $getRoot,
   $getSelection,
   $insertNodes,
@@ -26,8 +27,8 @@ import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link'
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from '@lexical/html'
 import { $getNearestBlockElementAncestorOrThrow } from '@lexical/utils'
 
-import { EDIT_MODE, BLOCK, ALIGN, VALUE_SOURCE } from '../constants'
-import type { EditorFocusOptions, EditorProps, ValueSource } from '../types'
+import { EDIT_MODE, BLOCK, ALIGN, VALUE_SOURCE, CUSTOMER_LEXICAL_COMMAND } from '../constants'
+import type { EditorFocusOptions, EditorProps, InsertImagePayload, ValueSource } from '../types'
 import { intialEditorContext, type EditorContext } from '../context/EditorContext'
 import { sanitizeUrl } from '../utils/url'
 import { filterDomFromString } from '../utils/dom'
@@ -395,7 +396,7 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
   }, [activeEditor, toggleEditLink, toggleLink])
 
   const updateValue = useCallback(
-    (value: string, source: ValueSource) => {
+    (value: string, source: ValueSource | 'text') => {
       activeEditor.update(() => {
         const root = $getRoot()
         root.clear()
@@ -405,9 +406,15 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
           const nodes = $generateNodesFromDOM(activeEditor, dom)
           root.select()
           $insertNodes(nodes)
-        } else {
+        } else if (source === VALUE_SOURCE.json) {
           const state = activeEditor.parseEditorState(value)
           activeEditor.setEditorState(state)
+        } else {
+          const paragraphNode = $createParagraphNode()
+          const textNode = $createTextNode(value)
+          paragraphNode.append(textNode)
+          root.select()
+          $insertNodes([paragraphNode])
         }
       })
     },
@@ -415,18 +422,20 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
   )
 
   const insertValue = useCallback(
-    (value: string, source: ValueSource) => {
+    (value: string, source: ValueSource | 'text') => {
       activeEditor.update(() => {
         let nodes: LexicalNode[] = []
 
         if (source === VALUE_SOURCE.html) {
           const dom = filterDomFromString(value as string)
           nodes = $generateNodesFromDOM(activeEditor, dom)
-        } else {
+        } else if (source === VALUE_SOURCE.json) {
           const state = activeEditor.parseEditorState(value)
           const html = state.read(() => $generateHtmlFromNodes(activeEditor))
           const dom = filterDomFromString(html as string)
           nodes = $generateNodesFromDOM(activeEditor, dom)
+        } else {
+          nodes = [$createTextNode(value)]
         }
 
         const selection = $getSelection()
@@ -448,6 +457,13 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
           $insertNodes(nodes)
         }
       })
+    },
+    [activeEditor]
+  )
+
+  const insertImage = useCallback(
+    (payload: InsertImagePayload) => {
+      activeEditor.dispatchCommand(CUSTOMER_LEXICAL_COMMAND.insertImage, payload)
     },
     [activeEditor]
   )
@@ -551,6 +567,7 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
     clearFormatting,
     updateValue,
     insertValue,
+    insertImage,
     clearValue,
     updateContentLength,
     updateEmpty,

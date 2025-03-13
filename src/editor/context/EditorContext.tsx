@@ -2,7 +2,7 @@ import React, { createContext } from 'react'
 import type { LexicalEditor } from 'lexical'
 import { useEditorContextProvider, type EditorContextProviderOptions } from '../hooks'
 import { BLOCK, ALIGN } from '../constants'
-import type { EditorFocusOptions, ValueSource } from '../types'
+import type { EditorFocusOptions, InsertImagePayload, ValueSource } from '../types'
 
 export interface EditorContext {
   _injected: boolean
@@ -68,8 +68,9 @@ export interface EditorContext {
   formatStrikethrough: () => void
   formatCode: () => void
   clearFormatting: () => void
-  updateValue: (value: string, source: ValueSource) => void
-  insertValue: (value: string, source: ValueSource) => void
+  updateValue: (value: string, source: ValueSource | 'text') => void
+  insertValue: (value: string, source: ValueSource | 'text') => void
+  insertImage: (payload: InsertImagePayload) => void
   clearValue: () => void
   updateContentLength: (target: number) => void
   updateEmpty: (target: boolean) => void
@@ -145,6 +146,7 @@ export const intialEditorContext: Omit<EditorContext, 'editor' | 'activeEditor'>
   clearFormatting: () => null,
   updateValue: () => null,
   insertValue: () => null,
+  insertImage: () => null,
   clearValue: () => null,
   updateContentLength: () => null,
   updateEmpty: () => null,

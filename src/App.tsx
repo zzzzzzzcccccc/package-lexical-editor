@@ -1,21 +1,28 @@
 import { useRef, useState } from 'react'
-import { Editor, useEditor, type EditorRef, type EditorProps, type EditorOnChangePayload } from './editor'
+import {
+  Editor,
+  useEditor,
+  SHORTCUTS_CONFIGURATION,
+  type EditorRef,
+  type EditorProps,
+  type EditorOnChangePayload
+} from './editor'
 
 import './app.scss'
 
 const maxLength = 10000
 const blockList = [
-  { name: 'Normal', value: 'paragraph' },
-  { name: 'H1', value: 'h1' },
-  { name: 'H2', value: 'h2' },
-  { name: 'H3', value: 'h3' },
-  { name: 'H4', value: 'h4' },
-  { name: 'H5', value: 'h5' },
-  { name: 'H6', value: 'h6' },
-  { name: 'Bulleted List', value: 'bullet' },
-  { name: 'Numbered List', value: 'number' },
-  { name: 'Check List', value: 'check' },
-  { name: 'Quote', value: 'quote' }
+  { name: `Normal (${SHORTCUTS_CONFIGURATION.paragraph})`, value: 'paragraph' },
+  { name: `H1 (${SHORTCUTS_CONFIGURATION.h1})`, value: 'h1' },
+  { name: `H2 (${SHORTCUTS_CONFIGURATION.h2})`, value: 'h2' },
+  { name: `H3 (${SHORTCUTS_CONFIGURATION.h3})`, value: 'h3' },
+  { name: `H4 (${SHORTCUTS_CONFIGURATION.h4})`, value: 'h4' },
+  { name: `H5 (${SHORTCUTS_CONFIGURATION.h5})`, value: 'h5' },
+  { name: `H6 (${SHORTCUTS_CONFIGURATION.h6})`, value: 'h6' },
+  { name: `Bulleted List (${SHORTCUTS_CONFIGURATION.bullet})`, value: 'bullet' },
+  { name: `Numbered List (${SHORTCUTS_CONFIGURATION.number})`, value: 'number' },
+  { name: `Check List (${SHORTCUTS_CONFIGURATION.check})`, value: 'check' },
+  { name: `Quote (${SHORTCUTS_CONFIGURATION.quote})`, value: 'quote' }
 ]
 
 const alignList = [
@@ -147,13 +154,13 @@ function Toolbar() {
           ))}
         </select>
         <button disabled={disabled} type='button' className={bold ? 'active' : ''} onClick={formatBold}>
-          B
+          B ({SHORTCUTS_CONFIGURATION.bold})
         </button>
         <button disabled={disabled} type='button' className={italic ? 'active' : ''} onClick={formatItalic}>
-          I
+          I ({SHORTCUTS_CONFIGURATION.italic})
         </button>
         <button disabled={disabled} type='button' className={underline ? 'active' : ''} onClick={formatUnderline}>
-          U
+          U ({SHORTCUTS_CONFIGURATION.underline})
         </button>
         <button
           disabled={disabled}
@@ -161,21 +168,22 @@ function Toolbar() {
           className={strikethrough ? 'active' : ''}
           onClick={formatStrikethrough}
         >
-          S
+          S ({SHORTCUTS_CONFIGURATION.strikeThrough})
         </button>
         <button disabled={disabled} type='button' className={lowercase ? 'active' : ''} onClick={formatLowercase}>
-          abc
+          abc ({SHORTCUTS_CONFIGURATION.lowercase})
         </button>
         <button disabled={disabled} type='button' className={uppercase ? 'active' : ''} onClick={formatUppercase}>
-          ABC
+          ABC ({SHORTCUTS_CONFIGURATION.uppercase})
         </button>
         <button disabled={disabled} type='button' className={capitalize ? 'active' : ''} onClick={formatCapitalize}>
-          Capitalize
+          Capitalize ({SHORTCUTS_CONFIGURATION.capitalize})
         </button>
         <button disabled={disabled} type='button' className={highlight ? 'active' : ''} onClick={formatHighlight}>
-          Highlight
+          Highlight ({SHORTCUTS_CONFIGURATION.highlight})
         </button>
         <input
+          title='Update font color'
           disabled={disabled}
           type='color'
           key='fontColor'
@@ -183,6 +191,7 @@ function Toolbar() {
           onChange={(e) => formatFontColor(e.target.value)}
         />
         <input
+          title='Update background color'
           disabled={disabled}
           type='color'
           key='backgroundColor'
@@ -190,13 +199,13 @@ function Toolbar() {
           onChange={(e) => formatBackgroundColor(e.target.value)}
         />
         <button disabled={disabled} type='button' className={code ? 'active' : ''} onClick={formatCode}>
-          Code
+          Code ({SHORTCUTS_CONFIGURATION.code})
         </button>
         <button disabled={disabled} type='button' className={link ? 'active' : ''} onClick={formatLink}>
-          Link
+          Link ({SHORTCUTS_CONFIGURATION.link})
         </button>
         <button disabled={disabled} type='button' onClick={clearFormatting}>
-          Clear format
+          Clear format ({SHORTCUTS_CONFIGURATION.clearFormatting})
         </button>
       </div>
       <div style={{ width: '100%', height: '6px' }} />
@@ -217,24 +226,18 @@ function Footer() {
 
 const defaultHTMLString = `<p class="editor-paragraph" dir="ltr"><u><i><b><strong class="editor-textBold editor-textItalic editor-textUnderline" style="color: rgb(54, 40, 240); font-size: 64px; white-space: pre-wrap;">Hello world</strong></b></i></u></p>`
 const defaultJSONString = `{"root":{"children":[{"children":[{"detail":0,"format":11,"mode":"normal","style":"color: #e31616;","text":"hello world2222oooo","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":11,"textStyle":"color: #e31616;"}],"direction":"ltr","format":"","indent":0,"type":"root","version":1,"textFormat":11,"textStyle":"color: #e31616;"}}`
+const defaultText = 'Hello world'
 
 function App() {
   const editorRef = useRef<EditorRef>(null)
 
   const [readOnly, setReadOnly] = useState(false)
   const [disabled, setDisabled] = useState(false)
-  const [changePayload, setChangePayload] = useState<EditorOnChangePayload>({
-    value: '',
-    contentSize: 0,
-    empty: true,
-    selection: null,
-    isRangeSelection: false
-  })
-
-  console.log('changePayload', changePayload)
+  const changePayloadRef = useRef<EditorOnChangePayload | null>(null)
 
   const handleOnChange: EditorProps['onChange'] = (payload) => {
-    setChangePayload(payload)
+    changePayloadRef.current = payload
+    console.log(changePayloadRef.current)
   }
 
   return (
@@ -252,7 +255,7 @@ function App() {
         onChange={handleOnChange}
         readOnly={readOnly}
         disabled={disabled}
-        debug={false}
+        debug={true}
         maxLength={maxLength}
         ref={editorRef}
       />
@@ -269,11 +272,30 @@ function App() {
         <button type='button' onClick={() => editorRef.current?.insertValue(defaultJSONString, 'json')}>
           append json
         </button>
+        <button type='button' onClick={() => editorRef.current?.insertValue(defaultText, 'text')}>
+          append text
+        </button>
         <button type='button' onClick={() => editorRef.current?.updateValue(defaultHTMLString, 'html')}>
           update html
         </button>
         <button type='button' onClick={() => editorRef.current?.updateValue(defaultJSONString, 'json')}>
           update json
+        </button>
+        <button type='button' onClick={() => editorRef.current?.updateValue(defaultText, 'text')}>
+          update text
+        </button>
+        <button
+          type='button'
+          onClick={() =>
+            editorRef.current?.insertImage({
+              src: 'https://playground.lexical.dev/assets/yellow-flower-vav9Hsve.jpg',
+              altText: 'Yellow Flower',
+              maxWidth: 600,
+              attributes: JSON.stringify({ key: 'value', time: Date.now().toString() })
+            })
+          }
+        >
+          Insert Image
         </button>
         <button type='button' onClick={() => editorRef.current?.focus()}>
           Focus

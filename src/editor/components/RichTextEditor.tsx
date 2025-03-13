@@ -18,7 +18,8 @@ import {
   DraggableBlockPlugin,
   MaxLengthPlugin,
   MarkdownShortcutPlugin,
-  TabFocusPlugin
+  TabFocusPlugin,
+  ShortcutsPlugin
 } from '../plugins'
 import { EditorPlaceholder } from './EditorPlaceholder'
 import { useEditorContext } from '../hooks'
@@ -65,6 +66,7 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
     anchor,
     updateValue,
     insertValue,
+    insertImage,
     clearValue,
     updateContentLength,
     updateEmpty,
@@ -79,7 +81,7 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
     const isJSON = outputValueSource === VALUE_SOURCE.json
 
     editorState.read(() => {
-      const value = isJSON ? safeJSONStringify(editorState, '{}') : $generateHtmlFromNodes(editor)
+      const value = isJSON ? safeJSONStringify(editorState.toJSON(), '{}') : $generateHtmlFromNodes(editor)
       const root = $getRoot()
       const content = root.getTextContent()
       const contentSize = content.length
@@ -94,7 +96,7 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
     })
   }
 
-  useImperativeHandle(ref, () => ({ updateValue, insertValue, clearValue, focus, blur }))
+  useImperativeHandle(ref, () => ({ updateValue, insertValue, insertImage, clearValue, focus, blur }))
 
   return (
     <>
@@ -114,19 +116,20 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
           </>
         }
       />
-      <ListenerFormatStatePlugin />
-      <OnChangePlugin ignoreSelectionChange={ignoreSelectionChange} onChange={handleOnChange} />
       {enableAutoFocus && <AutoFocusPlugin {...autoFocus} />}
+      <ListenerFormatStatePlugin />
       <ListPlugin />
       <CheckListPlugin />
       <LinkPlugin />
       <AutoLinkPlugin />
       <TabFocusPlugin />
       <TabIndentationPlugin />
+      <ShortcutsPlugin />
       {Boolean(anchor && enableDraggableBlock) && <DraggableBlockPlugin anchor={anchor!} />}
       {anchor && <FloatLinkPlugin anchor={anchor} />}
       {maxLength > 0 && <MaxLengthPlugin maxLength={maxLength} />}
       {enableMarkdownShortcut && <MarkdownShortcutPlugin />}
+      <OnChangePlugin ignoreSelectionChange={ignoreSelectionChange} onChange={handleOnChange} />
     </>
   )
 })

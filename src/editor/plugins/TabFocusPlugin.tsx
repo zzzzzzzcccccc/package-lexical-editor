@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
 import { $getSelection, $isRangeSelection, $setSelection, FOCUS_COMMAND } from 'lexical'
+import { useEditorContext } from '../hooks'
 
 const COMMAND_PRIORITY_LOW = 1
 const TAB_TO_FOCUS_INTERVAL = 100
@@ -21,7 +21,7 @@ function registerKeyTimeStampTracker() {
 }
 
 export function TabFocusPlugin(): null {
-  const [editor] = useLexicalComposerContext()
+  const { activeEditor } = useEditorContext()
 
   useEffect(() => {
     if (!hasRegisteredKeyDownListener) {
@@ -29,10 +29,9 @@ export function TabFocusPlugin(): null {
       hasRegisteredKeyDownListener = true
     }
 
-    return editor.registerCommand(
+    return activeEditor.registerCommand(
       FOCUS_COMMAND,
       (event: FocusEvent) => {
-        console.log('FOCUS_COMMAND')
         const selection = $getSelection()
         if ($isRangeSelection(selection)) {
           if (lastTabKeyDownTimestamp + TAB_TO_FOCUS_INTERVAL > event.timeStamp) {
@@ -43,7 +42,7 @@ export function TabFocusPlugin(): null {
       },
       COMMAND_PRIORITY_LOW
     )
-  }, [editor])
+  }, [activeEditor])
 
   return null
 }

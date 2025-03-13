@@ -1,6 +1,11 @@
 import { $isTextNode, TextNode, type DOMConversionMap } from 'lexical'
 import { intialEditorContext } from '../context/EditorContext'
 
+export const CAN_USE_DOM =
+  typeof window !== 'undefined' &&
+  typeof window.document !== 'undefined' &&
+  typeof window.document.createElement !== 'undefined'
+
 export function parseAllowedFontSize(input: string) {
   const match = input.match(/^(\d+(?:\.\d+)?)px$/)
   if (match) {

@@ -1,4 +1,5 @@
-import type { EditorThemeClasses } from 'lexical'
+import { createCommand, type EditorThemeClasses } from 'lexical'
+import { IS_APPLE } from '../utils/device'
 
 export const EDIT_MODE = {
   text: 'text',
@@ -145,4 +146,33 @@ export const ALIGN = {
 export const VALUE_SOURCE = {
   json: 'json',
   html: 'html'
+}
+
+export const SHORTCUTS_CONFIGURATION = {
+  bold: IS_APPLE ? '⌘+B' : 'Ctrl+B',
+  italic: IS_APPLE ? '⌘+I' : 'Ctrl+I',
+  underline: IS_APPLE ? '⌘+U' : 'Ctrl+U',
+  paragraph: IS_APPLE ? '⌘+Opt+0' : 'Ctrl+Alt+0',
+  h1: IS_APPLE ? '⌘+Opt+1' : 'Ctrl+Alt+1',
+  h2: IS_APPLE ? '⌘+Opt+2' : 'Ctrl+Alt+2',
+  h3: IS_APPLE ? '⌘+Opt+3' : 'Ctrl+Alt+3',
+  h4: IS_APPLE ? '⌘+Opt+4' : 'Ctrl+Alt+4',
+  h5: IS_APPLE ? '⌘+Opt+5' : 'Ctrl+Alt+5',
+  h6: IS_APPLE ? '⌘+Opt+6' : 'Ctrl+Alt+6',
+  bullet: IS_APPLE ? '⌘+Opt+7' : 'Ctrl+Alt+7',
+  number: IS_APPLE ? '⌘+Opt+8' : 'Ctrl+Alt+8',
+  check: IS_APPLE ? '⌘+Opt+9' : 'Ctrl+Alt+9',
+  quote: IS_APPLE ? '⌘+Opt+Q' : 'Ctrl+Alt+Q',
+  code: IS_APPLE ? '⌘+Opt+C' : 'Ctrl+Alt+C',
+  lowercase: IS_APPLE ? '⌘+Shift+1' : 'Ctrl+Shift+1',
+  uppercase: IS_APPLE ? '⌘+Shift+2' : 'Ctrl+Shift+2',
+  capitalize: IS_APPLE ? '⌘+Shift+3' : 'Ctrl+Shift+3',
+  strikeThrough: IS_APPLE ? '⌘+Shift+S' : 'Ctrl+Shift+S',
+  highlight: IS_APPLE ? '⌘+Shift+H' : 'Ctrl+Shift+H',
+  clearFormatting: IS_APPLE ? '⌘+\\' : 'Ctrl+\\',
+  link: IS_APPLE ? '⌘+K' : 'Ctrl+K'
+}
+
+export const CUSTOMER_LEXICAL_COMMAND = {
+  insertImage: createCommand('INSERT_IMAGE_COMMAND')
 }

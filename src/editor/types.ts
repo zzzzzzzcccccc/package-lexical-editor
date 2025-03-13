@@ -8,7 +8,9 @@ import type {
   SerializedEditorState,
   BaseSelection
 } from 'lexical'
+
 import { EDIT_MODE, VALUE_SOURCE } from './constants'
+import type { EditorContext } from './context/EditorContext'
 
 export type EditMode = (typeof EDIT_MODE)[keyof typeof EDIT_MODE]
 export type ValueSource = (typeof VALUE_SOURCE)[keyof typeof VALUE_SOURCE]
@@ -20,6 +22,14 @@ export type EditorOnChangePayload = {
   isRangeSelection: boolean
 }
 export type EditorFocusOptions = { defaultSelection?: 'rootStart' | 'rootEnd' }
+export type InsertImagePayload = {
+  src: string
+  altText: string
+  maxWidth?: number
+  width?: number
+  height?: number
+  attributes?: string | null
+}
 
 export interface EditorProps {
   namespace: string
@@ -44,15 +54,13 @@ export interface EditorProps {
   maxLength?: number
   enableMarkdownShortcut?: boolean
   enableDraggableBlock?: boolean
+  modalAnchor?: HTMLElement
 }
 
-export interface EditorRef {
-  updateValue: (value: string, source: ValueSource) => void
-  insertValue: (value: string, source: ValueSource) => void
-  clearValue: () => void
-  focus: (callbackFn?: () => void, options?: EditorFocusOptions) => void
-  blur: () => void
-}
+export type EditorRef = Pick<
+  EditorContext,
+  'updateValue' | 'insertValue' | 'insertImage' | 'clearValue' | 'focus' | 'blur'
+>
 
 export type ContentProps = Omit<
   EditorProps,

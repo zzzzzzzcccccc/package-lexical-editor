@@ -3,6 +3,7 @@ import type { Klass, LexicalNode, LexicalNodeReplacement } from 'lexical'
 import { HeadingNode, QuoteNode } from '@lexical/rich-text'
 import { ListNode, ListItemNode } from '@lexical/list'
 import { AutoLinkNode, LinkNode } from '@lexical/link'
+import { ImageNode, $createImageNode, $isImageNode } from './ImageNode'
 
 export const defaultNodes: Array<Klass<LexicalNode> | LexicalNodeReplacement> = [
   HeadingNode,
@@ -10,5 +11,8 @@ export const defaultNodes: Array<Klass<LexicalNode> | LexicalNodeReplacement> = 
   ListNode,
   ListItemNode,
   AutoLinkNode,
-  LinkNode
+  LinkNode,
+  ImageNode
 ]
+
+export { $createImageNode, $isImageNode }

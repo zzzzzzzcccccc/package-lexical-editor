@@ -1,21 +1,27 @@
 import { useEffect, useCallback } from 'react'
-import { $findMatchingParent, $getNearestNodeOfType, mergeRegister } from '@lexical/utils'
+import { $findMatchingParent, $getNearestNodeOfType, $wrapNodeInElement, mergeRegister } from '@lexical/utils'
 import { $isLinkNode } from '@lexical/link'
 import { $isListNode, ListNode } from '@lexical/list'
 import { $isHeadingNode } from '@lexical/rich-text'
 import { $getSelectionStyleValueForProperty } from '@lexical/selection'
 import {
+  $createParagraphNode,
   $getSelection,
+  $insertNodes,
   $isElementNode,
   $isRangeSelection,
   $isRootOrShadowRoot,
   COMMAND_PRIORITY_CRITICAL,
+  COMMAND_PRIORITY_EDITOR,
   SELECTION_CHANGE_COMMAND
 } from 'lexical'
 
 import { useEditorContext } from '../hooks'
 import { getSelectedNode } from '../utils/getSelectedNode'
 import { intialEditorContext } from '../context/EditorContext'
+import { InsertImagePayload } from '../types'
+import { CUSTOMER_LEXICAL_COMMAND } from '../constants'
+import { $createImageNode } from '../nodes'
 
 export function ListenerFormatStatePlugin() {
   const {
@@ -130,6 +136,33 @@ export function ListenerFormatStatePlugin() {
     updateFontSize
   ])
 
+  const handleOnInsertImage = useCallback(
+    (payload: InsertImagePayload) => {
+      return activeEditor.update(() => {
+        const imageNode = $createImageNode(payload)
+        const selection = $getSelection()
+        if ($isRangeSelection(selection)) {
+          const node = getSelectedNode(selection)
+          const parent = node.getParent()
+          const grandpa = parent?.getParent()
+          if ($isLinkNode(parent)) {
+            if (grandpa) {
+              grandpa.append(imageNode)
+            }
+          } else {
+            selection.insertNodes([imageNode])
+          }
+        } else {
+          $insertNodes([imageNode])
+          if ($isRootOrShadowRoot(imageNode.getParentOrThrow())) {
+            $wrapNodeInElement(imageNode, $createParagraphNode).selectEnd()
+          }
+        }
+      })
+    },
+    [activeEditor]
+  )
+
   useEffect(() => {
     activeEditor.getEditorState().read(() => {
       update()
@@ -151,9 +184,17 @@ export function ListenerFormatStatePlugin() {
           return false
         },
         COMMAND_PRIORITY_CRITICAL
+      ),
+      activeEditor.registerCommand(
+        CUSTOMER_LEXICAL_COMMAND.insertImage,
+        (payload: InsertImagePayload) => {
+          handleOnInsertImage(payload)
+          return true
+        },
+        COMMAND_PRIORITY_EDITOR
       )
     )
-  }, [activeEditor, update, updateActiveEditor])
+  }, [activeEditor, handleOnInsertImage, update, updateActiveEditor])
 
   return null
 }
