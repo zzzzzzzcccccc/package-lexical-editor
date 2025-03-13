@@ -1,10 +1,27 @@
 import { $isTextNode, TextNode, type DOMConversionMap } from 'lexical'
 import { intialEditorContext } from '../context/EditorContext'
+import { INLINE_CSS_STYLE_ID } from '../constants'
 
 export const CAN_USE_DOM =
   typeof window !== 'undefined' &&
   typeof window.document !== 'undefined' &&
   typeof window.document.createElement !== 'undefined'
+
+export function injectorCss(target: string) {
+  if (!CAN_USE_DOM) {
+    return
+  }
+
+  if (!document.getElementById(INLINE_CSS_STYLE_ID)) {
+    const style = document.createElement('style')
+    const injecotr = document.head || document.body
+
+    style.id = INLINE_CSS_STYLE_ID
+    style.innerHTML = target
+
+    injecotr.appendChild(style)
+  }
+}
 
 export function parseAllowedFontSize(input: string) {
   const match = input.match(/^(\d+(?:\.\d+)?)px$/)

@@ -1,6 +1,8 @@
 import { createCommand, type EditorThemeClasses } from 'lexical'
 import { IS_APPLE } from '../utils/device'
 
+export const INLINE_CSS_STYLE_ID = '__editor-inline-css'
+
 export const EDIT_MODE = {
   text: 'text',
   richText: 'richText'
