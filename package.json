@@ -1,6 +1,6 @@
 {
   "name": "package-lexical",
-  "version": "0.27.1",
+  "version": "0.27.2",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.cjs.js",
@@ -21,15 +21,15 @@
     "build:editor": "vite build --config vite.config.editor.ts"
   },
   "dependencies": {
-    "@lexical/html": "^0.27.1",
-    "@lexical/link": "^0.27.1",
-    "@lexical/list": "^0.27.1",
-    "@lexical/markdown": "^0.27.1",
-    "@lexical/react": "^0.27.1",
-    "@lexical/rich-text": "^0.27.1",
-    "@lexical/selection": "^0.27.1",
-    "@lexical/utils": "^0.27.1",
-    "lexical": "^0.27.1"
+    "@lexical/html": "^0.27.2",
+    "@lexical/link": "^0.27.2",
+    "@lexical/list": "^0.27.2",
+    "@lexical/markdown": "^0.27.2",
+    "@lexical/react": "^0.27.2",
+    "@lexical/rich-text": "^0.27.2",
+    "@lexical/selection": "^0.27.2",
+    "@lexical/utils": "^0.27.2",
+    "lexical": "^0.27.2"
   },
   "peerDependencies": {
     "react": "^18.2.0",
