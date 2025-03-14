@@ -93,7 +93,7 @@ export class IframeNode extends DecoratorBlockNode {
     return {
       ...super.exportJSON(),
       src: this.__src,
-      width: this.__width,
+      width: '100%',
       height: this.__height,
       elementAllow: this.__elementAllow
     }

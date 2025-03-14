@@ -1,11 +1,5 @@
 import type React from 'react'
-import type {
-  LexicalEditor,
-  EditorThemeClasses,
-  SerializedEditorState,
-  BaseSelection,
-  ElementFormatType
-} from 'lexical'
+import type { LexicalEditor, EditorThemeClasses, SerializedEditorState, BaseSelection } from 'lexical'
 
 import { EDIT_MODE, VALUE_SOURCE, MEDIA_NODE_TYPE } from './constants'
 import type { EditorContext } from './context/EditorContext'
