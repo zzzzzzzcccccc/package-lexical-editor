@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@lexical/hashtag':
-        specifier: ^0.27.1
-        version: 0.27.1
       '@lexical/html':
         specifier: ^0.27.1
         version: 0.27.1

@@ -83,6 +83,8 @@ function Toolbar() {
     fontFamily,
     disabled,
     readOnly,
+    canRedo,
+    canUndo,
     formatAlign,
     formatFontColor,
     formatBackgroundColor,
@@ -99,7 +101,9 @@ function Toolbar() {
     formatHighlight,
     formatStrikethrough,
     formatCode,
-    clearFormatting
+    clearFormatting,
+    undo,
+    redo
   } = useEditor()
 
   const blockValue = blockList.find((item) => item.value === block)?.value || 'paragraph'
@@ -110,6 +114,12 @@ function Toolbar() {
   return (
     <>
       <div className='toolbar'>
+        <button type='button' onClick={undo} disabled={!canUndo}>
+          Undo
+        </button>
+        <button type='button' onClick={redo} disabled={!canRedo}>
+          Redo
+        </button>
         <select
           disabled={disabled}
           title='Block Type'
@@ -282,7 +292,7 @@ function App() {
         headerSlot={<Toolbar />}
         editorClassName='editor-content'
         footerSlot={<Footer />}
-        outputValueSource='html'
+        outputValueSource='json'
         ignoreSelectionChange
         onChange={handleOnChange}
         readOnly={readOnly}
@@ -304,14 +314,14 @@ function App() {
         <button type='button' onClick={() => editorRef.current?.insertValue(defaultJSONString, 'json')}>
           append json
         </button>
-        <button type='button' onClick={() => editorRef.current?.insertValue(defaultText, 'text')}>
-          append text
-        </button>
         <button type='button' onClick={() => editorRef.current?.updateValue(defaultHTMLString, 'html')}>
           update html
         </button>
         <button type='button' onClick={() => editorRef.current?.updateValue(defaultJSONString, 'json')}>
           update json
+        </button>
+        <button type='button' onClick={() => editorRef.current?.insertValue(defaultText, 'text')}>
+          append text
         </button>
         <button type='button' onClick={() => editorRef.current?.updateValue(defaultText, 'text')}>
           update text
@@ -328,6 +338,42 @@ function App() {
           }
         >
           Insert Image
+        </button>
+        <button
+          type='button'
+          onClick={() =>
+            editorRef.current?.insertMedia({
+              src: 'https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3?_=1',
+              mediaType: 'audio',
+              attributes: JSON.stringify({ key: 'value', time: Date.now().toString() })
+            })
+          }
+        >
+          Insert audio
+        </button>
+        <button
+          type='button'
+          onClick={() =>
+            editorRef.current?.insertMedia({
+              src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+              mediaType: 'video',
+              width: '46%',
+              attributes: JSON.stringify({ key: 'value', time: Date.now().toString() })
+            })
+          }
+        >
+          Insert video
+        </button>
+        <button
+          type='button'
+          onClick={() => {
+            editorRef.current?.insertIframe({
+              src: 'https://www.youtube.com/embed/3JZ_D3ELwOQ',
+              height: '400px'
+            })
+          }}
+        >
+          Insert iframe
         </button>
         <button type='button' onClick={() => editorRef.current?.focus()}>
           Focus

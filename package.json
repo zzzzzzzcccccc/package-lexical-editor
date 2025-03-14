@@ -21,7 +21,6 @@
     "build:editor": "vite build --config vite.config.editor.ts"
   },
   "dependencies": {
-    "@lexical/hashtag": "^0.27.1",
     "@lexical/html": "^0.27.1",
     "@lexical/link": "^0.27.1",
     "@lexical/list": "^0.27.1",

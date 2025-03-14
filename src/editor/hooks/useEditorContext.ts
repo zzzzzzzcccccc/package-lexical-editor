@@ -34,6 +34,8 @@ export function useEditor() {
     editLink,
     contentLength,
     empty,
+    canRedo,
+    canUndo,
     formatLink,
     formatAlign,
     formatFontColor,
@@ -54,9 +56,13 @@ export function useEditor() {
     updateValue,
     insertValue,
     insertImage,
+    insertMedia,
+    insertIframe,
     clearValue,
     focus,
-    blur
+    blur,
+    undo,
+    redo
   } = useEditorContext()
 
   return {
@@ -81,6 +87,8 @@ export function useEditor() {
     editLink,
     contentLength,
     empty,
+    canRedo,
+    canUndo,
     formatLink,
     formatAlign,
     formatFontColor,
@@ -101,8 +109,12 @@ export function useEditor() {
     updateValue,
     insertValue,
     insertImage,
+    insertMedia,
+    insertIframe,
     clearValue,
     focus,
-    blur
+    blur,
+    undo,
+    redo
   }
 }

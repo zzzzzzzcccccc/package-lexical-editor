@@ -2,13 +2,21 @@ import React, { createContext } from 'react'
 import type { LexicalEditor } from 'lexical'
 import { useEditorContextProvider, type EditorContextProviderOptions } from '../hooks'
 import { BLOCK, ALIGN } from '../constants'
-import type { EditorFocusOptions, InsertImagePayload, ValueSource } from '../types'
+import type {
+  EditorFocusOptions,
+  InsertIframePayload,
+  InsertImagePayload,
+  InsertMediaPayload,
+  ValueSource
+} from '../types'
 
 export interface EditorContext {
   _injected: boolean
   anchor: HTMLElement | null
   editor: LexicalEditor
   activeEditor: LexicalEditor
+  canRedo: boolean
+  canUndo: boolean
   fontFamily: string
   fontSize: string
   fontColor: string
@@ -40,6 +48,8 @@ export interface EditorContext {
   updateBackgroundColor: (target: string) => void
   updateBlock: (target: keyof typeof BLOCK) => void
   updateAlign: (target: (typeof ALIGN)[keyof typeof ALIGN]) => void
+  toggleCanRedo: (target?: boolean) => void
+  toggleCanUndo: (target?: boolean) => void
   toggleLink: (target?: boolean) => void
   toggleBold: (target?: boolean) => void
   toggleItalic: (target?: boolean) => void
@@ -51,6 +61,8 @@ export interface EditorContext {
   toggleCapitalize: (target?: boolean) => void
   toggleHighlight: (target?: boolean) => void
   toggleStrikethrough: (target?: boolean) => void
+  redo: () => void
+  undo: () => void
   formatBlock: (target: keyof typeof BLOCK) => void
   formatAlign: (target: (typeof ALIGN)[keyof typeof ALIGN]) => void
   formatFontColor: (target: string) => void
@@ -71,6 +83,8 @@ export interface EditorContext {
   updateValue: (value: string, source: ValueSource | 'text') => void
   insertValue: (value: string, source: ValueSource | 'text') => void
   insertImage: (payload: InsertImagePayload) => void
+  insertMedia: (payload: InsertMediaPayload) => void
+  insertIframe: (payload: InsertIframePayload) => void
   clearValue: () => void
   updateContentLength: (target: number) => void
   updateEmpty: (target: boolean) => void
@@ -85,6 +99,8 @@ export interface EditorContextProviderProps extends EditorContextProviderOptions
 export const intialEditorContext: Omit<EditorContext, 'editor' | 'activeEditor'> = {
   _injected: false,
   anchor: null,
+  canRedo: false,
+  canUndo: false,
   fontColor: '#000000',
   backgroundColor: '#ffffff',
   fontFamily: 'Arial',
@@ -116,6 +132,10 @@ export const intialEditorContext: Omit<EditorContext, 'editor' | 'activeEditor'>
   updateFontFamily: () => null,
   updateBlock: () => null,
   updateAlign: () => null,
+  redo: () => null,
+  undo: () => null,
+  toggleCanRedo: () => null,
+  toggleCanUndo: () => null,
   toggleLink: () => null,
   toggleBold: () => null,
   toggleItalic: () => null,
@@ -147,6 +167,8 @@ export const intialEditorContext: Omit<EditorContext, 'editor' | 'activeEditor'>
   updateValue: () => null,
   insertValue: () => null,
   insertImage: () => null,
+  insertMedia: () => null,
+  insertIframe: () => null,
   clearValue: () => null,
   updateContentLength: () => null,
   updateEmpty: () => null,

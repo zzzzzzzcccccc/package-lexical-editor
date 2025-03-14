@@ -1,5 +1,11 @@
 import { useEffect, useCallback } from 'react'
-import { $findMatchingParent, $getNearestNodeOfType, $wrapNodeInElement, mergeRegister } from '@lexical/utils'
+import {
+  $findMatchingParent,
+  $getNearestNodeOfType,
+  $insertNodeToNearestRoot,
+  $wrapNodeInElement,
+  mergeRegister
+} from '@lexical/utils'
 import { $isLinkNode } from '@lexical/link'
 import { $isListNode, ListNode } from '@lexical/list'
 import { $isHeadingNode } from '@lexical/rich-text'
@@ -11,17 +17,34 @@ import {
   $isElementNode,
   $isRangeSelection,
   $isRootOrShadowRoot,
+  CAN_REDO_COMMAND,
+  CAN_UNDO_COMMAND,
   COMMAND_PRIORITY_CRITICAL,
   COMMAND_PRIORITY_EDITOR,
+  RangeSelection,
   SELECTION_CHANGE_COMMAND
 } from 'lexical'
 
 import { useEditorContext } from '../hooks'
 import { getSelectedNode } from '../utils/getSelectedNode'
 import { intialEditorContext } from '../context/EditorContext'
-import { InsertImagePayload } from '../types'
+import { InsertIframePayload, InsertImagePayload, InsertMediaPayload } from '../types'
 import { CUSTOMER_LEXICAL_COMMAND } from '../constants'
-import { $createImageNode } from '../nodes'
+import { $createImageNode, $createMediaNode, $createIframeNode } from '../nodes'
+
+function getRangeSelectionInfo(rangeSelection: RangeSelection) {
+  const node = getSelectedNode(rangeSelection)
+  const parent = node.getParent()
+  const grandpa = parent?.getParent()
+  const isLinkNode = $isLinkNode(parent)
+
+  return {
+    node,
+    parent,
+    grandpa,
+    isLinkNode
+  }
+}
 
 export function ListenerFormatStatePlugin() {
   const {
@@ -34,6 +57,8 @@ export function ListenerFormatStatePlugin() {
     toggleLink,
     updateBlock,
     updateAlign,
+    toggleCanRedo,
+    toggleCanUndo,
     toggleBold,
     toggleItalic,
     toggleUnderline,
@@ -142,10 +167,8 @@ export function ListenerFormatStatePlugin() {
         const imageNode = $createImageNode(payload)
         const selection = $getSelection()
         if ($isRangeSelection(selection)) {
-          const node = getSelectedNode(selection)
-          const parent = node.getParent()
-          const grandpa = parent?.getParent()
-          if ($isLinkNode(parent)) {
+          const { grandpa, isLinkNode } = getRangeSelectionInfo(selection)
+          if (isLinkNode) {
             if (grandpa) {
               grandpa.append(imageNode)
             }
@@ -162,6 +185,39 @@ export function ListenerFormatStatePlugin() {
     },
     [activeEditor]
   )
+
+  const handleOnInsertMedia = useCallback(
+    (payload: InsertMediaPayload) => {
+      return activeEditor.update(() => {
+        const mediaNode = $createMediaNode(payload)
+        const selection = $getSelection()
+        if ($isRangeSelection(selection)) {
+          const { grandpa, isLinkNode } = getRangeSelectionInfo(selection)
+          if (isLinkNode) {
+            if (grandpa) {
+              grandpa.append(mediaNode)
+            }
+          } else {
+            selection.insertNodes([mediaNode])
+          }
+        } else {
+          $insertNodes([mediaNode])
+          if ($isRootOrShadowRoot(mediaNode.getParentOrThrow())) {
+            $wrapNodeInElement(mediaNode, $createParagraphNode).selectEnd()
+          }
+        }
+      })
+    },
+    [activeEditor]
+  )
+
+  const handleOnInsertIframe = useCallback((payload: InsertIframePayload) => {
+    const iframeNode = $createIframeNode(payload)
+
+    $insertNodeToNearestRoot(iframeNode)
+
+    return true
+  }, [])
 
   useEffect(() => {
     activeEditor.getEditorState().read(() => {
@@ -186,15 +242,56 @@ export function ListenerFormatStatePlugin() {
         COMMAND_PRIORITY_CRITICAL
       ),
       activeEditor.registerCommand(
+        CAN_REDO_COMMAND,
+        (payload) => {
+          toggleCanRedo(payload)
+          return false
+        },
+        COMMAND_PRIORITY_CRITICAL
+      ),
+      activeEditor.registerCommand(
+        CAN_UNDO_COMMAND,
+        (payload) => {
+          toggleCanUndo(payload)
+          return true
+        },
+        COMMAND_PRIORITY_CRITICAL
+      ),
+      activeEditor.registerCommand(
         CUSTOMER_LEXICAL_COMMAND.insertImage,
         (payload: InsertImagePayload) => {
           handleOnInsertImage(payload)
           return true
         },
         COMMAND_PRIORITY_EDITOR
+      ),
+      activeEditor.registerCommand(
+        CUSTOMER_LEXICAL_COMMAND.insertMedia,
+        (payload: InsertMediaPayload) => {
+          handleOnInsertMedia(payload)
+          return true
+        },
+        COMMAND_PRIORITY_EDITOR
+      ),
+      activeEditor.registerCommand(
+        CUSTOMER_LEXICAL_COMMAND.insertIframe,
+        (payload: InsertIframePayload) => {
+          handleOnInsertIframe(payload)
+          return true
+        },
+        COMMAND_PRIORITY_EDITOR
       )
     )
-  }, [activeEditor, handleOnInsertImage, update, updateActiveEditor])
+  }, [
+    activeEditor,
+    handleOnInsertIframe,
+    handleOnInsertImage,
+    handleOnInsertMedia,
+    toggleCanRedo,
+    toggleCanUndo,
+    update,
+    updateActiveEditor
+  ])
 
   return null
 }

@@ -2,18 +2,17 @@ import type React from 'react'
 import type {
   LexicalEditor,
   EditorThemeClasses,
-  Klass,
-  LexicalNode,
-  LexicalNodeReplacement,
   SerializedEditorState,
-  BaseSelection
+  BaseSelection,
+  ElementFormatType
 } from 'lexical'
 
-import { EDIT_MODE, VALUE_SOURCE } from './constants'
+import { EDIT_MODE, VALUE_SOURCE, MEDIA_NODE_TYPE } from './constants'
 import type { EditorContext } from './context/EditorContext'
 
 export type EditMode = (typeof EDIT_MODE)[keyof typeof EDIT_MODE]
 export type ValueSource = (typeof VALUE_SOURCE)[keyof typeof VALUE_SOURCE]
+export type MediaNodeType = (typeof MEDIA_NODE_TYPE)[keyof typeof MEDIA_NODE_TYPE]
 export type EditorOnChangePayload = {
   value: SerializedEditorState | string
   contentSize: number
@@ -30,6 +29,18 @@ export type InsertImagePayload = {
   height?: number
   attributes?: string | null
 }
+export type InsertMediaPayload = {
+  src: string
+  mediaType: MediaNodeType
+  width?: string
+  height?: string
+  attributes?: string | null
+}
+export type InsertIframePayload = {
+  src: string
+  height: string
+  elementAllow?: string
+}
 
 export interface EditorProps {
   namespace: string
@@ -43,7 +54,6 @@ export interface EditorProps {
   readOnly?: boolean
   disabled?: boolean
   theme?: EditorThemeClasses
-  nodes?: Array<Klass<LexicalNode> | LexicalNodeReplacement>
   debug?: boolean
   autoFocus?: EditorFocusOptions
   headerSlot?: React.ReactNode
@@ -59,7 +69,16 @@ export interface EditorProps {
 
 export type EditorRef = Pick<
   EditorContext,
-  'updateValue' | 'insertValue' | 'insertImage' | 'clearValue' | 'focus' | 'blur'
+  | 'updateValue'
+  | 'insertValue'
+  | 'insertImage'
+  | 'insertMedia'
+  | 'insertIframe'
+  | 'clearValue'
+  | 'focus'
+  | 'blur'
+  | 'undo'
+  | 'redo'
 >
 
 export type ContentProps = Omit<

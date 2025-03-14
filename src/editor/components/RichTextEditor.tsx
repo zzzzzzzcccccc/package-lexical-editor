@@ -7,6 +7,7 @@ import { ListPlugin } from '@lexical/react/LexicalListPlugin'
 import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin'
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin'
 import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin'
+import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin'
 import { $generateHtmlFromNodes } from '@lexical/html'
 import { $getRoot, $getSelection, $isRangeSelection, type EditorState, type LexicalEditor } from 'lexical'
 
@@ -67,11 +68,15 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
     updateValue,
     insertValue,
     insertImage,
+    insertMedia,
+    insertIframe,
     clearValue,
     updateContentLength,
     updateEmpty,
     focus,
-    blur
+    blur,
+    undo,
+    redo
   } = useEditorContext()
 
   const contentClassName = ['content', editorClassName].filter(Boolean).join(' ')
@@ -96,7 +101,18 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
     })
   }
 
-  useImperativeHandle(ref, () => ({ updateValue, insertValue, insertImage, clearValue, focus, blur }))
+  useImperativeHandle(ref, () => ({
+    updateValue,
+    insertValue,
+    insertImage,
+    insertMedia,
+    insertIframe,
+    clearValue,
+    focus,
+    blur,
+    undo,
+    redo
+  }))
 
   return (
     <>
@@ -116,6 +132,7 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
           </>
         }
       />
+      <HistoryPlugin />
       {enableAutoFocus && <AutoFocusPlugin {...autoFocus} />}
       <ListenerFormatStatePlugin />
       <ListPlugin />

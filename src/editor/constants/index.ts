@@ -61,6 +61,7 @@ export const DEFAULT_THEME: EditorThemeClasses = {
   hr: 'editor-hr',
   hrSelected: 'editor-hrSelected',
   image: 'editor-image',
+  media: 'editor-media',
   indent: 'editor-indent',
   inlineImage: 'inline-editor-image',
   layoutContainer: 'editor-layoutContainer',
@@ -176,5 +177,12 @@ export const SHORTCUTS_CONFIGURATION = {
 }
 
 export const CUSTOMER_LEXICAL_COMMAND = {
-  insertImage: createCommand('INSERT_IMAGE_COMMAND')
+  insertImage: createCommand('INSERT_IMAGE_COMMAND'),
+  insertMedia: createCommand('INSERT_MEDIA_COMMAND'),
+  insertIframe: createCommand('INSERT_IFRAME_COMMAND')
 }
+
+export const MEDIA_NODE_TYPE = {
+  video: 'video',
+  audio: 'audio'
+} as const

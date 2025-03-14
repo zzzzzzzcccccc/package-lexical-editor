@@ -10,6 +10,8 @@ import {
   FORMAT_ELEMENT_COMMAND,
   FORMAT_TEXT_COMMAND,
   LexicalNode,
+  REDO_COMMAND,
+  UNDO_COMMAND,
   type LexicalEditor
 } from 'lexical'
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
@@ -28,7 +30,14 @@ import { $generateHtmlFromNodes, $generateNodesFromDOM } from '@lexical/html'
 import { $getNearestBlockElementAncestorOrThrow } from '@lexical/utils'
 
 import { EDIT_MODE, BLOCK, ALIGN, VALUE_SOURCE, CUSTOMER_LEXICAL_COMMAND } from '../constants'
-import type { EditorFocusOptions, EditorProps, InsertImagePayload, ValueSource } from '../types'
+import type {
+  EditorFocusOptions,
+  EditorProps,
+  InsertIframePayload,
+  InsertImagePayload,
+  InsertMediaPayload,
+  ValueSource
+} from '../types'
 import { intialEditorContext, type EditorContext } from '../context/EditorContext'
 import { sanitizeUrl } from '../utils/url'
 import { filterDomFromString } from '../utils/dom'
@@ -44,6 +53,8 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
   const [anchor, setAnchor] = useState<HTMLElement | null>(intialEditorContext.anchor)
   const [activeEditor, setActiveEditor] = useState(editor)
 
+  const [canRedo, setCanRedo] = useState(intialEditorContext.canRedo)
+  const [canUndo, setCanUndo] = useState(intialEditorContext.canUndo)
   const [fontColor, setFontColor] = useState(intialEditorContext.fontColor)
   const [backgroundColor, setBackgroundColor] = useState(intialEditorContext.backgroundColor)
   const [fontSize, setFontSize] = useState(intialEditorContext.fontSize)
@@ -113,6 +124,14 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
     }
     setAlign(target)
     return true
+  }, [])
+
+  const toggleCanRedo = useCallback((target?: boolean) => {
+    setCanRedo((prev) => (typeof target === 'boolean' ? target : !prev))
+  }, [])
+
+  const toggleCanUndo = useCallback((target?: boolean) => {
+    setCanUndo((prev) => (typeof target === 'boolean' ? target : !prev))
   }, [])
 
   const toggleLink = useCallback((target?: boolean) => {
@@ -468,6 +487,20 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
     [activeEditor]
   )
 
+  const insertMedia = useCallback(
+    (payload: InsertMediaPayload) => {
+      activeEditor.dispatchCommand(CUSTOMER_LEXICAL_COMMAND.insertMedia, payload)
+    },
+    [activeEditor]
+  )
+
+  const insertIframe = useCallback(
+    (payload: InsertIframePayload) => {
+      activeEditor.dispatchCommand(CUSTOMER_LEXICAL_COMMAND.insertIframe, payload)
+    },
+    [activeEditor]
+  )
+
   const clearValue = useCallback(() => {
     activeEditor.update(() => {
       const root = $getRoot()
@@ -494,6 +527,14 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
     activeEditor.blur()
   }, [activeEditor])
 
+  const redo = useCallback(() => {
+    activeEditor.dispatchCommand(REDO_COMMAND, undefined)
+  }, [activeEditor])
+
+  const undo = useCallback(() => {
+    activeEditor.dispatchCommand(UNDO_COMMAND, undefined)
+  }, [activeEditor])
+
   useEffect(() => {
     if (readOnly || disabled) {
       toggleEditLink(false)
@@ -506,6 +547,8 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
     anchor,
     editor,
     activeEditor,
+    canRedo,
+    canUndo,
     fontColor,
     backgroundColor,
     fontFamily,
@@ -537,6 +580,8 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
     updateFontFamily,
     updateBlock,
     updateAlign,
+    toggleCanRedo,
+    toggleCanUndo,
     toggleLink,
     toggleBold,
     toggleItalic,
@@ -568,10 +613,14 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
     updateValue,
     insertValue,
     insertImage,
+    insertMedia,
+    insertIframe,
     clearValue,
     updateContentLength,
     updateEmpty,
     focus,
-    blur
+    blur,
+    redo,
+    undo
   }
 }

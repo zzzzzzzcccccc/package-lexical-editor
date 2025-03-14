@@ -2,6 +2,8 @@
 @use './floatLinkEditor.scss';
 @use './draggableBlock.scss';
 @use './imageNode.scss';
+@use './mediaNode.scss';
+@use './iframeNode.scss';
 
 .root-lexical-editor {
   margin: 0;
