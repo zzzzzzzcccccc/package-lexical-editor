@@ -62,6 +62,7 @@ export const DEFAULT_THEME: EditorThemeClasses = {
   hrSelected: 'editor-hrSelected',
   image: 'editor-image',
   media: 'editor-media',
+  mention: 'editor-mention',
   indent: 'editor-indent',
   inlineImage: 'inline-editor-image',
   layoutContainer: 'editor-layoutContainer',

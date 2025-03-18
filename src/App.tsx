@@ -5,7 +5,8 @@ import {
   SHORTCUTS_CONFIGURATION,
   type EditorRef,
   type EditorProps,
-  type EditorOnChangePayload
+  type EditorOnChangePayload,
+  type FetchMentionOption
 } from './editor'
 
 import './app.scss'
@@ -61,6 +62,30 @@ const fontFamilyList = [
   { name: 'Oswald', value: 'Oswald' },
   { name: 'Raleway', value: 'Raleway' },
   { name: 'Poppins', value: 'Poppins' }
+]
+
+const MENTION_DATA = [
+  { name: 'John', email: 'john@gmail.com', id: '1' },
+  { name: 'Doe', email: 'doe@gmail.com', id: '2' },
+  { name: 'Alice', email: 'alice@gmail.com', id: '3' },
+  { name: 'Bob', email: 'bob@gmail.com', id: '4' },
+  { name: 'Charlie', email: 'charlie@gmail.com', id: '5' },
+  { name: 'Eve', email: 'eve@gmail.com', id: '6' },
+  { name: 'Frank', email: 'frank@gmail.com', id: '7' },
+  { name: 'Grace', email: 'grace@gmail.com', id: '8' },
+  { name: 'Hank', email: 'hank@gmail.com', id: '9' },
+  { name: 'Ivy', email: 'ivy@gmail.com', id: '10' },
+  { name: 'Jack', email: 'jack@gmail.com', id: '11' },
+  { name: 'Kelly', email: 'kelly@gmail.com', id: '12' },
+  { name: 'Leo', email: 'leo@gmail.com', id: '13' },
+  { name: 'Mia', email: 'mia@gmail.com', id: '14' },
+  { name: 'Nathan', email: 'nathan@gmail.com', id: '15' },
+  { name: 'Olivia', email: 'olivia@gmail.com', id: '16' },
+  { name: 'Paul', email: 'paul@gmail.com', id: '17' },
+  { name: 'Quincy', email: 'quincy@gmail.com', id: '18' },
+  { name: 'Rachel', email: 'rachel@gmail.com', id: '19' },
+  { name: 'Sam', email: 'sam@gmail.com', id: '20' },
+  { name: '张三', email: 'zhangsan@gmail.com', id: '21' }
 ]
 
 function Toolbar() {
@@ -234,6 +259,31 @@ function Footer() {
   )
 }
 
+function fetchMention(query: string | null): Promise<Array<FetchMentionOption>> {
+  return new Promise<Array<FetchMentionOption>>((resolve) => {
+    setTimeout(() => {
+      if (!query) {
+        resolve(
+          MENTION_DATA.map((item) => ({
+            mentionName: `@${item.name}(${item.email})`,
+            selectOption: item.name,
+            attributes: JSON.stringify({ user_id: item.id })
+          }))
+        )
+      } else {
+        const results = MENTION_DATA.filter((item) => item.name.toLowerCase().includes(query.toLowerCase()))
+        resolve(
+          results.map((item) => ({
+            mentionName: `@${item.name}(${item.email})`,
+            selectOption: item.name,
+            attributes: JSON.stringify({ user_id: item.id })
+          }))
+        )
+      }
+    }, 500)
+  })
+}
+
 const defaultHTMLString = `<p class="editor-paragraph" dir="ltr"><u><i><b><strong class="editor-textBold editor-textItalic editor-textUnderline" style="color: rgb(54, 40, 240); font-size: 64px; white-space: pre-wrap;">Hello world</strong></b></i></u></p>`
 const defaultJSONString = `{"root":{"children":[{"children":[{"detail":0,"format":11,"mode":"normal","style":"color: #e31616;","text":"hello world2222oooo","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":11,"textStyle":"color: #e31616;"}],"direction":"ltr","format":"","indent":0,"type":"root","version":1,"textFormat":11,"textStyle":"color: #e31616;"}}`
 const defaultText = 'Hello world'
@@ -292,7 +342,8 @@ function App() {
         headerSlot={<Toolbar />}
         editorClassName='editor-content'
         footerSlot={<Footer />}
-        outputValueSource='json'
+        outputValueSource='html'
+        fetchMention={fetchMention}
         ignoreSelectionChange
         onChange={handleOnChange}
         readOnly={readOnly}

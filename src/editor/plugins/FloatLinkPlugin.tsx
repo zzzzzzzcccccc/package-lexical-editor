@@ -51,11 +51,15 @@ export interface FloatLinkUpdateProps {
 const FloatLinkUpdate = forwardRef<HTMLInputElement, FloatLinkUpdateProps>((props, ref) => {
   const { value, onChange, onSave, onCancel } = props
 
+  const isComposing = useRef(false)
+
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChange?.(event.target.value)
   }
 
   const handleOnKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (isComposing.current) return false
+
     if (event.key === 'Enter') {
       event.preventDefault()
       onSave?.()
@@ -70,6 +74,14 @@ const FloatLinkUpdate = forwardRef<HTMLInputElement, FloatLinkUpdateProps>((prop
     return false
   }
 
+  const handleOnCompositionStart = () => {
+    isComposing.current = true
+  }
+
+  const handleOnCompositionEnd = () => {
+    isComposing.current = false
+  }
+
   const handleOnSave = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation()
     onSave?.()
@@ -82,7 +94,15 @@ const FloatLinkUpdate = forwardRef<HTMLInputElement, FloatLinkUpdateProps>((prop
 
   return (
     <>
-      <input ref={ref} className='link-input' value={value} onChange={handleOnChange} onKeyDown={handleOnKeyDown} />
+      <input
+        ref={ref}
+        onCompositionStart={handleOnCompositionStart}
+        onCompositionEnd={handleOnCompositionEnd}
+        className='link-input'
+        value={value}
+        onChange={handleOnChange}
+        onKeyDown={handleOnKeyDown}
+      />
       <div>
         <button type='button' className='link-cancel' onClick={handleOnCancel} />
         <button type='button' className='link-confirm' onClick={handleOnSave} />

@@ -35,6 +35,15 @@ export type InsertIframePayload = {
   height: string
   elementAllow?: string
 }
+export type InsertMentionPayload = {
+  mentionName: string
+  attributes?: string | null
+}
+export type FetchMentionOption = {
+  mentionName: string
+  selectOption: string | (() => React.ReactNode)
+  attributes?: string | null
+}
 
 export interface EditorProps {
   namespace: string
@@ -59,6 +68,7 @@ export interface EditorProps {
   enableMarkdownShortcut?: boolean
   enableDraggableBlock?: boolean
   modalAnchor?: HTMLElement
+  fetchMention?: (query: string | null) => Promise<Array<FetchMentionOption>>
 }
 
 export type EditorRef = Pick<

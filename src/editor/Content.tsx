@@ -21,6 +21,7 @@ export const Content = forwardRef<EditorRef, ContentProps>((props, ref) => {
     maxLength,
     enableMarkdownShortcut,
     enableDraggableBlock,
+    fetchMention,
     onChange
   } = props
 
@@ -44,6 +45,7 @@ export const Content = forwardRef<EditorRef, ContentProps>((props, ref) => {
           onChange={onChange}
           enableMarkdownShortcut={enableMarkdownShortcut}
           enableDraggableBlock={enableDraggableBlock}
+          fetchMention={fetchMention}
           ref={ref}
         />
       </div>

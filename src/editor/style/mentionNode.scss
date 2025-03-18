@@ -1,0 +1,49 @@
+.root-lexical-editor {
+  span.editor-mention {
+    cursor: default;
+    position: relative;
+
+    .focused {
+      outline: 2px solid rgb(60, 132, 244);
+      user-select: none;
+    }
+  }
+}
+
+.lexical-mention-menu {
+  width: 250px;
+  max-height: 160px;
+  overflow: auto;
+  margin: 0;
+  padding: 0;
+  box-shadow: 0 5px 10px #0000004d;
+
+  ul {
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+
+    .selected {
+      background-color: #f9f9f9;
+    }
+
+    li {
+      list-style: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #333;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      &:focus {
+        background-color: #f9f9f9;
+      }
+
+      &:hover {
+        background-color: #f9f9f9;
+      }
+    }
+  }
+}

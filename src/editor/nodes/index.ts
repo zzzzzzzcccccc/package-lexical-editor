@@ -6,6 +6,7 @@ import { AutoLinkNode, LinkNode } from '@lexical/link'
 import { ImageNode, $createImageNode, $isImageNode } from './ImageNode'
 import { $createMediaNode, $isMediaNode, MediaNode } from './MediaNode'
 import { $createIframeNode, $isIframeNode, IframeNode } from './IframeNode'
+import { $createMentionNode, $isMentionNode, MentionNode } from './MentionNode'
 
 export const nodes: Array<Klass<LexicalNode> | LexicalNodeReplacement> = [
   HeadingNode,
@@ -16,7 +17,17 @@ export const nodes: Array<Klass<LexicalNode> | LexicalNodeReplacement> = [
   LinkNode,
   ImageNode,
   MediaNode,
-  IframeNode
+  IframeNode,
+  MentionNode
 ]
 
-export { $createImageNode, $isImageNode, $createMediaNode, $isMediaNode, $createIframeNode, $isIframeNode }
+export {
+  $createImageNode,
+  $isImageNode,
+  $createMediaNode,
+  $isMediaNode,
+  $createIframeNode,
+  $isIframeNode,
+  $createMentionNode,
+  $isMentionNode
+}

@@ -20,7 +20,8 @@ import {
   MaxLengthPlugin,
   MarkdownShortcutPlugin,
   TabFocusPlugin,
-  ShortcutsPlugin
+  ShortcutsPlugin,
+  MentionPlugin
 } from '../plugins'
 import { EditorPlaceholder } from './EditorPlaceholder'
 import { useEditorContext } from '../hooks'
@@ -43,6 +44,7 @@ type RichTextEditorProps = Pick<
   | 'maxLength'
   | 'enableMarkdownShortcut'
   | 'enableDraggableBlock'
+  | 'fetchMention'
 >
 
 export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props, ref) => {
@@ -58,7 +60,8 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
     maxLength = -1,
     enableMarkdownShortcut = true,
     enableDraggableBlock = true,
-    onChange
+    onChange,
+    fetchMention
   } = props
 
   const {
@@ -84,8 +87,7 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
 
   const handleOnChange = (editorState: EditorState, editor: LexicalEditor) => {
     const isJSON = outputValueSource === VALUE_SOURCE.json
-
-    editorState.read(() => {
+    const state = editorState.read(() => {
       const value = isJSON ? safeJSONStringify(editorState.toJSON(), '{}') : $generateHtmlFromNodes(editor)
       const root = $getRoot()
       const content = root.getTextContent()
@@ -94,11 +96,17 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
       const selection = $getSelection()
       const isRangeSelection = $isRangeSelection(selection)
 
-      updateContentLength(contentSize)
-      updateEmpty(empty)
-
-      onChange?.({ value, contentSize, empty, selection, isRangeSelection })
+      return {
+        value,
+        contentSize,
+        empty,
+        selection,
+        isRangeSelection
+      }
     })
+    updateContentLength(state.contentSize)
+    updateEmpty(state.empty)
+    onChange?.(state)
   }
 
   useImperativeHandle(ref, () => ({
@@ -142,6 +150,7 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
       <TabFocusPlugin />
       <TabIndentationPlugin />
       <ShortcutsPlugin />
+      {fetchMention ? <MentionPlugin fetchMention={fetchMention} /> : null}
       {Boolean(anchor && enableDraggableBlock) && <DraggableBlockPlugin anchor={anchor!} />}
       {anchor && <FloatLinkPlugin anchor={anchor} />}
       {maxLength > 0 && <MaxLengthPlugin maxLength={maxLength} />}
