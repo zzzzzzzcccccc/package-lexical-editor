@@ -85,7 +85,8 @@ const MENTION_DATA = [
   { name: 'Quincy', email: 'quincy@gmail.com', id: '18' },
   { name: 'Rachel', email: 'rachel@gmail.com', id: '19' },
   { name: 'Sam', email: 'sam@gmail.com', id: '20' },
-  { name: '张三', email: 'zhangsan@gmail.com', id: '21' }
+  { name: '张三', email: 'zhangsan@gmail.com', id: '21' },
+  { name: 'Tom Xu', email: 'tomxu@gmail.com', id: '22' }
 ]
 
 function Toolbar() {

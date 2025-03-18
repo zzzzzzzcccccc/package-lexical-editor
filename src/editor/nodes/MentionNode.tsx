@@ -123,7 +123,7 @@ export class MentionNode extends TextNode {
 
 export function $createMentionNode({ mentionName, attributes }: InsertMentionPayload & { key?: NodeKey }): MentionNode {
   const node = new MentionNode(mentionName, attributes)
-  node.setMode('segmented').toggleDirectionless()
+  node.setMode('token').toggleDirectionless()
   return $applyNodeReplacement(node)
 }
 
