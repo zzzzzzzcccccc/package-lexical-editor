@@ -119,6 +119,14 @@ export class MentionNode extends TextNode {
   canInsertTextAfter(): boolean {
     return false
   }
+
+  setFormat() {
+    return this
+  }
+
+  setStyle() {
+    return this
+  }
 }
 
 export function $createMentionNode({ mentionName, attributes }: InsertMentionPayload & { key?: NodeKey }): MentionNode {
