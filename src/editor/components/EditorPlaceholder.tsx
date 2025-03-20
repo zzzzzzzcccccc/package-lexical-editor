@@ -7,7 +7,7 @@ export interface EditorPlaceholderProps {
 export function EditorPlaceholder(props: EditorPlaceholderProps) {
   const { children } = props
 
-  if (!children) return
+  if (!children) return null
 
   return <div className='placeholder'>{children}</div>
 }

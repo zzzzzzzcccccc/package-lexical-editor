@@ -21,7 +21,10 @@ import {
   MarkdownShortcutPlugin,
   TabFocusPlugin,
   ShortcutsPlugin,
-  MentionPlugin
+  MentionPlugin,
+  ImagePlugin,
+  MediaPlugin,
+  IframePlugin
 } from '../plugins'
 import { EditorPlaceholder } from './EditorPlaceholder'
 import { useEditorContext } from '../hooks'
@@ -150,6 +153,9 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
       <TabFocusPlugin />
       <TabIndentationPlugin />
       <ShortcutsPlugin />
+      <ImagePlugin />
+      <MediaPlugin />
+      <IframePlugin />
       {fetchMention ? <MentionPlugin fetchMention={fetchMention} /> : null}
       {Boolean(anchor && enableDraggableBlock) && <DraggableBlockPlugin anchor={anchor!} />}
       {anchor && <FloatLinkPlugin anchor={anchor} />}

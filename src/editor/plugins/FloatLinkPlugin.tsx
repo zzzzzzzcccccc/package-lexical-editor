@@ -287,7 +287,7 @@ function FloatLinkEditor(props: FloatLinkEditorProps) {
   }, [editLink])
 
   return (
-    <div className='link-editor' ref={editorRef}>
+    <div className='lexical-link-editor' ref={editorRef}>
       {!enabled ? null : editLink ? (
         <FloatLinkUpdate
           value={editUrl}
