@@ -39,6 +39,9 @@ export type InsertMentionPayload = {
   mentionName: string
   attributes?: string | null
 }
+export type InsertVariablePayload = {
+  variable: string
+}
 export type FetchMentionOption = {
   mentionName: string
   selectOption: string | (() => React.ReactNode)
@@ -49,6 +52,10 @@ export type SpecialShortcutMenuOption = {
   option: React.ReactNode
   keywords: Array<string>
   onSelect: (query: string | null) => void
+}
+export type VariableMenuOption = {
+  variable: string
+  option: React.ReactNode
 }
 
 export interface EditorProps {
@@ -73,6 +80,7 @@ export interface EditorProps {
   onDragDropPasteFiles?: (target: Array<File>) => boolean
   triggerSpecialShortcutMenus?: Array<SpecialShortcutMenuOption>
   triggerSpecialShortcutKey?: string
+  variableMenus?: Array<VariableMenuOption>
   maxLength?: number
   enableMarkdownShortcut?: boolean
   enableDraggableBlock?: boolean
@@ -87,6 +95,7 @@ export type EditorRef = Pick<
   | 'insertImage'
   | 'insertMedia'
   | 'insertIframe'
+  | 'insertVariable'
   | 'clearValue'
   | 'formatBlock'
   | 'formatAlign'
@@ -103,6 +112,7 @@ export type EditorRef = Pick<
   | 'formatCapitalize'
   | 'formatStrikethrough'
   | 'formatHighlight'
+  | 'clearFormatting'
   | 'focus'
   | 'blur'
   | 'undo'

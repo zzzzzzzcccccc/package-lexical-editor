@@ -26,7 +26,9 @@ import {
   MediaPlugin,
   IframePlugin,
   DragDropPasteFilesPlugin,
-  SpecialShortcutToolbarPlugin
+  SpecialShortcutToolbarPlugin,
+  VariablePlugin,
+  VaribleShortcutToolbarPlugin
 } from '../plugins'
 import { EditorPlaceholder } from './EditorPlaceholder'
 import { useEditorContext } from '../hooks'
@@ -53,6 +55,7 @@ type RichTextEditorProps = Pick<
   | 'fetchMention'
   | 'triggerSpecialShortcutKey'
   | 'triggerSpecialShortcutMenus'
+  | 'variableMenus'
 >
 
 export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props, ref) => {
@@ -70,6 +73,7 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
     enableDraggableBlock = true,
     triggerSpecialShortcutKey = '/',
     triggerSpecialShortcutMenus = [],
+    variableMenus = [],
     onChange,
     onDragDropPasteFiles,
     fetchMention
@@ -84,6 +88,7 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
     insertImage,
     insertMedia,
     insertIframe,
+    insertVariable,
     clearValue,
     updateContentLength,
     updateEmpty,
@@ -107,6 +112,7 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
     formatStrikethrough,
     formatHighlight,
     formatCode,
+    clearFormatting
   } = useEditorContext()
 
   const contentClassName = ['content', editorClassName].filter(Boolean).join(' ')
@@ -142,6 +148,7 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
     insertImage,
     insertMedia,
     insertIframe,
+    insertVariable,
     clearValue,
     focus,
     blur,
@@ -162,7 +169,8 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
     formatCapitalize,
     formatStrikethrough,
     formatHighlight,
-    formatCode
+    formatCode,
+    clearFormatting
   }))
 
   return (
@@ -196,6 +204,7 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
       <ImagePlugin />
       <MediaPlugin />
       <IframePlugin />
+      <VariablePlugin />
       <DragDropPasteFilesPlugin onDragDropPasteFiles={onDragDropPasteFiles} />
       {fetchMention ? <MentionPlugin fetchMention={fetchMention} /> : null}
       {Boolean(anchor && enableDraggableBlock) && <DraggableBlockPlugin anchor={anchor!} />}
@@ -205,6 +214,7 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
       {triggerSpecialShortcutMenus.length > 0 && (
         <SpecialShortcutToolbarPlugin triggerKey={triggerSpecialShortcutKey} options={triggerSpecialShortcutMenus} />
       )}
+      {variableMenus.length > 0 && <VaribleShortcutToolbarPlugin options={variableMenus} />}
       <OnChangePlugin ignoreSelectionChange={ignoreSelectionChange} onChange={handleOnChange} />
     </>
   )

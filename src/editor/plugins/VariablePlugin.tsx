@@ -1,5 +1,4 @@
 import { useEffect, useCallback } from 'react'
-import { useEditorContext } from '../hooks'
 import { $wrapNodeInElement, mergeRegister } from '@lexical/utils'
 import {
   $createParagraphNode,
@@ -10,18 +9,19 @@ import {
   COMMAND_PRIORITY_EDITOR
 } from 'lexical'
 
+import { useEditorContext } from '../hooks'
 import { CUSTOMER_LEXICAL_COMMAND } from '../constants'
-import { InsertImagePayload } from '../types'
-import { $createImageNode } from '../nodes'
+import { InsertVariablePayload } from '../types'
+import { $createVariableNode } from '../nodes'
 import { getRangeSelectionInfo } from '../utils/getRangeSelectionInfo'
 
-export function ImagePlugin() {
+export function VariablePlugin() {
   const { activeEditor } = useEditorContext()
 
-  const handleOnInsertImage = useCallback(
-    (payload: InsertImagePayload) => {
+  const handleInsertVariable = useCallback(
+    (payload: InsertVariablePayload) => {
       return activeEditor.update(() => {
-        const imageNode = $createImageNode(payload)
+        const imageNode = $createVariableNode(payload)
         const selection = $getSelection()
 
         if ($isRangeSelection(selection)) {
@@ -45,17 +45,17 @@ export function ImagePlugin() {
   )
 
   useEffect(() => {
-    return mergeRegister(
+    mergeRegister(
       activeEditor.registerCommand(
-        CUSTOMER_LEXICAL_COMMAND.insertImage,
-        (payload: InsertImagePayload) => {
-          handleOnInsertImage(payload)
+        CUSTOMER_LEXICAL_COMMAND.insertVariable,
+        (payload: InsertVariablePayload) => {
+          handleInsertVariable(payload)
           return true
         },
         COMMAND_PRIORITY_EDITOR
       )
     )
-  }, [activeEditor, handleOnInsertImage])
+  }, [activeEditor, handleInsertVariable])
 
   return null
 }

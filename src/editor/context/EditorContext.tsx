@@ -7,6 +7,7 @@ import type {
   InsertIframePayload,
   InsertImagePayload,
   InsertMediaPayload,
+  InsertVariablePayload,
   ValueSource
 } from '../types'
 
@@ -85,6 +86,7 @@ export interface EditorContext {
   insertImage: (payload: InsertImagePayload) => void
   insertMedia: (payload: InsertMediaPayload) => void
   insertIframe: (payload: InsertIframePayload) => void
+  insertVariable: (payload: InsertVariablePayload) => void
   clearValue: () => void
   updateContentLength: (target: number) => void
   updateEmpty: (target: boolean) => void
@@ -169,6 +171,7 @@ export const intialEditorContext: Omit<EditorContext, 'editor' | 'activeEditor'>
   insertImage: () => null,
   insertMedia: () => null,
   insertIframe: () => null,
+  insertVariable: () => null,
   clearValue: () => null,
   updateContentLength: () => null,
   updateEmpty: () => null,

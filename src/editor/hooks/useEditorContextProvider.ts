@@ -36,6 +36,7 @@ import type {
   InsertIframePayload,
   InsertImagePayload,
   InsertMediaPayload,
+  InsertVariablePayload,
   ValueSource
 } from '../types'
 import { intialEditorContext, type EditorContext } from '../context/EditorContext'
@@ -501,6 +502,13 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
     [activeEditor]
   )
 
+  const insertVariable = useCallback(
+    (payload: InsertVariablePayload) => {
+      activeEditor.dispatchCommand(CUSTOMER_LEXICAL_COMMAND.insertVariable, payload)
+    },
+    [activeEditor]
+  )
+
   const clearValue = useCallback(() => {
     activeEditor.update(() => {
       const root = $getRoot()
@@ -615,6 +623,7 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
     insertImage,
     insertMedia,
     insertIframe,
+    insertVariable,
     clearValue,
     updateContentLength,
     updateEmpty,

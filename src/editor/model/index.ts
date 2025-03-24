@@ -1,5 +1,5 @@
 import { MenuOption } from '@lexical/react/LexicalTypeaheadMenuPlugin'
-import type { FetchMentionOption, SpecialShortcutMenuOption } from '../types'
+import type { FetchMentionOption, SpecialShortcutMenuOption, VariableMenuOption } from '../types'
 
 export class MentionOption extends MenuOption {
   mentionName: string
@@ -28,5 +28,17 @@ export class ShortcutMenuOption extends MenuOption {
     this.option = item.option
     this.keywords = item.keywords
     this.onSelect = item.onSelect.bind(this)
+  }
+}
+
+export class VariableOption extends MenuOption {
+  variable: string
+  option: React.ReactNode
+
+  constructor(item: VariableMenuOption) {
+    super(item.variable)
+
+    this.variable = item.variable
+    this.option = item.option
   }
 }

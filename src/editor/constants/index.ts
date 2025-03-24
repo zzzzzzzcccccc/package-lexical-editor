@@ -63,6 +63,7 @@ export const DEFAULT_THEME: EditorThemeClasses = {
   image: 'editor-image',
   media: 'editor-media',
   mention: 'editor-mention',
+  variable: 'editor-variable',
   indent: 'editor-indent',
   inlineImage: 'inline-editor-image',
   layoutContainer: 'editor-layoutContainer',
@@ -180,7 +181,8 @@ export const SHORTCUTS_CONFIGURATION = {
 export const CUSTOMER_LEXICAL_COMMAND = {
   insertImage: createCommand('INSERT_IMAGE_COMMAND'),
   insertMedia: createCommand('INSERT_MEDIA_COMMAND'),
-  insertIframe: createCommand('INSERT_IFRAME_COMMAND')
+  insertIframe: createCommand('INSERT_IFRAME_COMMAND'),
+  insertVariable: createCommand('INSERT_VARIABLE_COMMAND')
 }
 
 export const MEDIA_NODE_TYPE = {

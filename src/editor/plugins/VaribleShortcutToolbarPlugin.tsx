@@ -1,33 +1,33 @@
-import React, { useMemo, useState } from 'react'
+import { useState, useMemo } from 'react'
 import { createPortal } from 'react-dom'
-import { TextNode } from 'lexical'
-import { LexicalTypeaheadMenuPlugin, useBasicTypeaheadTriggerMatch } from '@lexical/react/LexicalTypeaheadMenuPlugin'
+import { useBasicTypeaheadTriggerMatch, LexicalTypeaheadMenuPlugin } from '@lexical/react/LexicalTypeaheadMenuPlugin'
 
+import { VariableMenuOption } from '../types'
+import { VariableOption } from '../model'
 import { useEditorContext } from '../hooks'
-import { SpecialShortcutMenuOption } from '../types'
-import { ShortcutMenuOption } from '../model'
+import { TextNode } from 'lexical'
+import { $createVariableNode } from '../nodes'
 
-export interface SpecialShortcutToolbarPluginProps {
-  options: Array<SpecialShortcutMenuOption>
-  triggerKey: string
+export type VaribleShortcutToolbarPluginProps = {
+  options: Array<VariableMenuOption>
 }
 
 function MenuItem({
   item,
-  selected,
+  selected = false,
   index,
   onClick,
   onMouseEnter,
   setHighlightedIndex,
   selectOptionAndCleanUp
 }: {
-  item: ShortcutMenuOption
+  item: VariableOption
   selected: boolean
   index: number
   onClick?: () => void
   onMouseEnter?: () => void
   setHighlightedIndex?: (index: number) => void
-  selectOptionAndCleanUp?: (option: ShortcutMenuOption) => void
+  selectOptionAndCleanUp?: (option: VariableOption) => void
 }) {
   const handleOnMouseEnter = (event: React.MouseEvent<HTMLLIElement>) => {
     event.stopPropagation()
@@ -43,49 +43,38 @@ function MenuItem({
 
   return (
     <li
-      className={['customer-shortcut-item', selected ? 'selected' : ''].filter(Boolean).join(' ')}
-      title={[item.primaryKeyword, ...item.keywords].join(', ') || ''}
+      className={['variable-item', selected ? 'selected' : ''].filter(Boolean).join(' ')}
+      title={item.variable}
       key={item.key}
       aria-selected={selected}
-      id={`customer-shortcut-item-${index}`}
+      id={`variable-item-${index}`}
       ref={item.setRefElement}
       role='option'
       onMouseEnter={handleOnMouseEnter}
       onClick={handleOnClick}
       tabIndex={-1}
     >
-      {item.option || <span>{item.primaryKeyword}</span>}
+      {item.option}
     </li>
   )
 }
 
-export function SpecialShortcutToolbarPlugin(props: SpecialShortcutToolbarPluginProps) {
-  const { options, triggerKey } = props
-  const { activeEditor } = useEditorContext()
-
+export function VaribleShortcutToolbarPlugin(props: VaribleShortcutToolbarPluginProps) {
+  const { options } = props
   const [queryString, setQueryString] = useState<string | null>(null)
 
-  const checkForTriggerMatch = useBasicTypeaheadTriggerMatch(triggerKey, {
-    minLength: 0
-  })
+  const { activeEditor } = useEditorContext()
+  const checkForTriggerMatch = useBasicTypeaheadTriggerMatch('$', { minLength: 0 })
 
   const finalOptions = useMemo(() => {
     const results = options.map((option) => {
-      return new ShortcutMenuOption({
-        primaryKeyword: option.primaryKeyword,
-        option: option.option,
-        keywords: option.keywords,
-        onSelect: option.onSelect
-      })
+      return new VariableOption(option)
     })
     if (!queryString) {
       return results
     }
-
-    const regex = new RegExp(queryString, 'i')
-
-    return results.filter((item) => {
-      return regex.test(item.primaryKeyword) || item.keywords.some((keyword) => regex.test(keyword))
+    return results.filter((option) => {
+      return option.variable.toLowerCase().includes(queryString.toLowerCase())
     })
   }, [options, queryString])
 
@@ -94,28 +83,32 @@ export function SpecialShortcutToolbarPlugin(props: SpecialShortcutToolbarPlugin
   }
 
   const handleOnSelectOption = (
-    selectedOption: ShortcutMenuOption,
+    selectedOption: VariableOption,
     nodeToReplace: TextNode | null,
-    closeMenu: () => void,
-    matchingString: string | null
+    closeMenu: () => void
   ) => {
     activeEditor.update(() => {
-      nodeToReplace?.remove()
-      selectedOption.onSelect(matchingString)
+      const variableNode = $createVariableNode({
+        variable: selectedOption.variable
+      })
+      if (nodeToReplace) {
+        nodeToReplace.replace(variableNode)
+      }
+      variableNode.select()
       closeMenu()
     })
   }
 
   return (
-    <LexicalTypeaheadMenuPlugin<ShortcutMenuOption>
+    <LexicalTypeaheadMenuPlugin<VariableOption>
       onQueryChange={handleOnQueryChange}
       onSelectOption={handleOnSelectOption}
-      triggerFn={checkForTriggerMatch}
       options={finalOptions}
+      triggerFn={checkForTriggerMatch}
       menuRenderFn={(anchorElementRef, { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex }) => {
         return anchorElementRef.current && finalOptions.length > 0
           ? createPortal(
-              <div className='lexical-special-shortcut-menu'>
+              <div className='lexical-variable-menu'>
                 <ul>
                   {finalOptions.map((item, index) => (
                     <MenuItem

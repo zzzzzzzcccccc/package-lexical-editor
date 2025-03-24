@@ -23,6 +23,7 @@ export const Content = forwardRef<EditorRef, ContentProps>((props, ref) => {
     enableDraggableBlock,
     triggerSpecialShortcutKey,
     triggerSpecialShortcutMenus,
+    variableMenus,
     fetchMention,
     onChange,
     onDragDropPasteFiles
@@ -52,6 +53,7 @@ export const Content = forwardRef<EditorRef, ContentProps>((props, ref) => {
           fetchMention={fetchMention}
           triggerSpecialShortcutKey={triggerSpecialShortcutKey}
           triggerSpecialShortcutMenus={triggerSpecialShortcutMenus}
+          variableMenus={variableMenus}
           ref={ref}
         />
       </div>

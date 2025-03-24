@@ -1,16 +1,18 @@
-import { useRef, useState } from 'react'
+import React, { useRef, useState, Suspense } from 'react'
 import {
-  Editor,
   useEditor,
   SHORTCUTS_CONFIGURATION,
   type EditorRef,
   type EditorProps,
   type EditorOnChangePayload,
   type FetchMentionOption,
-  type SpecialShortcutMenuOption
+  type SpecialShortcutMenuOption,
+  type VariableMenuOption
 } from './editor'
 
 import './app.scss'
+
+const LazyEditor = React.lazy(() => import('./editor'))
 
 const maxLength = 10000
 const blockList = [
@@ -409,6 +411,41 @@ function App() {
     }
   ]
 
+  const variableMenus: VariableMenuOption[] = [
+    {
+      variable: '{{ person.name }}',
+      option: <span>Person Name</span>
+    },
+    {
+      variable: '{{ person.age }}',
+      option: <span>Person Age</span>
+    },
+    {
+      variable: '{{ person.email }}',
+      option: <span>Person Email</span>
+    },
+    {
+      variable: '{{ person.phone }}',
+      option: <span>Person Phone</span>
+    },
+    {
+      variable: '{{ person.address }}',
+      option: <span>Person Address</span>
+    },
+    {
+      variable: '{{ person.gender }}',
+      option: <span>Person Gender</span>
+    },
+    {
+      variable: '{{ person.birthday }}',
+      option: <span>Person Birthday</span>
+    },
+    {
+      variable: '{{ person.company }}',
+      option: <span>Person Company</span>
+    }
+  ]
+
   const handleOnChange: EditorProps['onChange'] = (payload) => {
     changePayloadRef.current = payload
     console.log(changePayloadRef.current)
@@ -473,27 +510,30 @@ function App() {
           </svg>
         </a>
       </div>
-      <Editor
-        className='editor'
-        namespace='playground'
-        editMode='richText'
-        autoFocus={{ defaultSelection: 'rootEnd' }}
-        headerSlot={<Toolbar />}
-        editorClassName='editor-content'
-        footerSlot={<Footer />}
-        outputValueSource='html'
-        fetchMention={fetchMention}
-        ignoreSelectionChange
-        onChange={handleOnChange}
-        onDragDropPasteFiles={handleOnDragDropPasteFiles}
-        readOnly={readOnly}
-        disabled={disabled}
-        debug={true}
-        maxLength={maxLength}
-        ref={editorRef}
-        triggerSpecialShortcutKey='/'
-        triggerSpecialShortcutMenus={triggerSpecialShortcutMenus}
-      />
+      <Suspense fallback={<div>Loading...</div>}>
+        <LazyEditor
+          className='editor'
+          namespace='playground'
+          editMode='richText'
+          autoFocus={{ defaultSelection: 'rootEnd' }}
+          headerSlot={<Toolbar />}
+          editorClassName='editor-content'
+          footerSlot={<Footer />}
+          outputValueSource='html'
+          fetchMention={fetchMention}
+          ignoreSelectionChange
+          onChange={handleOnChange}
+          onDragDropPasteFiles={handleOnDragDropPasteFiles}
+          readOnly={readOnly}
+          disabled={disabled}
+          debug={true}
+          maxLength={maxLength}
+          ref={editorRef}
+          triggerSpecialShortcutKey='/'
+          triggerSpecialShortcutMenus={triggerSpecialShortcutMenus}
+          variableMenus={variableMenus}
+        />
+      </Suspense>
       <div className='actions'>
         <button type='button' onClick={() => setReadOnly((prev) => !prev)}>
           {readOnly ? 'On' : 'Off'} readOnly
@@ -567,6 +607,9 @@ function App() {
           }}
         >
           Insert iframe
+        </button>
+        <button type='button' onClick={() => editorRef.current?.insertVariable({ variable: `{{ var.name }}` })}>
+          Insert variable
         </button>
         <button type='button' onClick={() => editorRef.current?.focus()}>
           Focus
