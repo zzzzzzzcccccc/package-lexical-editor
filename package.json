@@ -1,6 +1,6 @@
 {
   "name": "awesome-lexical-react-editor",
-  "version": "0.28.3",
+  "version": "0.28.4",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.cjs.js",
