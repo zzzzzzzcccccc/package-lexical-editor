@@ -1,9 +1,11 @@
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
-import { LexicalTypeaheadMenuPlugin, MenuOption } from '@lexical/react/LexicalTypeaheadMenuPlugin'
+import { LexicalTypeaheadMenuPlugin } from '@lexical/react/LexicalTypeaheadMenuPlugin'
 import { TextNode } from 'lexical'
+
 import { useEditorContext } from '../hooks'
 import { $createMentionNode } from '../nodes'
+import { MentionOption } from '../model'
 import type { EditorProps, FetchMentionOption } from '../types'
 
 const PUNCTUATION = '\\.,\\+\\*\\?\\$\\@\\|#{}\\(\\)\\^\\-\\[\\]\\\\/!%\'"~=<>_:;'
@@ -46,32 +48,35 @@ const AtSignMentionsRegexAliasRegex = new RegExp(
   '(^|\\s|\\()(' + '[' + TRIGGERS + ']' + '((?:' + VALID_CHARS + '){0,' + ALIAS_LENGTH_LIMIT + '})' + ')$'
 )
 
-class MentionOption extends MenuOption {
-  mentionName: string
-  selectOption: string | (() => React.ReactNode)
-  attributes?: string | null
-
-  constructor(item: FetchMentionOption) {
-    super(item.mentionName)
-    this.mentionName = item.mentionName
-    this.selectOption = item.selectOption
-    this.attributes = item.attributes || null
-  }
-}
-
 function MentionItem({
   item,
   selected = false,
   index,
   onClick,
-  onMouseEnter
+  onMouseEnter,
+  setHighlightedIndex,
+  selectOptionAndCleanUp
 }: {
   item: MentionOption
   selected: boolean
   index: number
   onClick?: () => void
   onMouseEnter?: () => void
+  setHighlightedIndex?: (index: number) => void
+  selectOptionAndCleanUp?: (option: MentionOption) => void
 }) {
+  const handleOnMouseEnter = (event: React.MouseEvent<HTMLLIElement>) => {
+    event.stopPropagation()
+    setHighlightedIndex?.(index)
+    onMouseEnter?.()
+  }
+
+  const handleOnClick = (event: React.MouseEvent<HTMLLIElement>) => {
+    event.stopPropagation()
+    selectOptionAndCleanUp?.(item)
+    onClick?.()
+  }
+
   return (
     <li
       className={['montion-item', selected ? 'selected' : ''].filter(Boolean).join(' ')}
@@ -81,8 +86,8 @@ function MentionItem({
       id={`montion-item-${index}`}
       ref={item.setRefElement}
       role='option'
-      onMouseEnter={onMouseEnter}
-      onClick={onClick}
+      onMouseEnter={handleOnMouseEnter}
+      onClick={handleOnClick}
       tabIndex={-1}
     >
       {typeof item.selectOption === 'string' ? <span>{item.selectOption}</span> : item.selectOption()}
@@ -182,17 +187,14 @@ export function MentionPlugin({ fetchMention }: Pick<EditorProps, 'fetchMention'
       triggerFn={handleOnTriggerFn}
       options={options}
       menuRenderFn={(anchorElementRef, { selectedIndex, setHighlightedIndex, selectOptionAndCleanUp }) => {
-        return anchorElementRef.current && options.length
+        return anchorElementRef.current && options.length > 0
           ? createPortal(
               <div className='lexical-mention-menu'>
                 <ul>
                   {options.map((item, index) => (
                     <MentionItem
-                      onClick={() => {
-                        setHighlightedIndex(index)
-                        selectOptionAndCleanUp(item)
-                      }}
-                      onMouseEnter={() => setHighlightedIndex(index)}
+                      setHighlightedIndex={setHighlightedIndex}
+                      selectOptionAndCleanUp={selectOptionAndCleanUp}
                       key={item.key}
                       index={index}
                       item={item}

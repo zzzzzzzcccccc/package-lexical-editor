@@ -6,7 +6,8 @@ import {
   type EditorRef,
   type EditorProps,
   type EditorOnChangePayload,
-  type FetchMentionOption
+  type FetchMentionOption,
+  type SpecialShortcutMenuOption
 } from './editor'
 
 import './app.scss'
@@ -285,6 +286,15 @@ function fetchMention(query: string | null): Promise<Array<FetchMentionOption>> 
   })
 }
 
+function imageFileToBase64(file: File) {
+  return new Promise<string>((resolve) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = () => resolve('')
+    reader.readAsDataURL(file)
+  })
+}
+
 const defaultHTMLString = `<p class="editor-paragraph" dir="ltr"><u><i><b><strong class="editor-textBold editor-textItalic editor-textUnderline" style="color: rgb(54, 40, 240); font-size: 64px; white-space: pre-wrap;">Hello world</strong></b></i></u></p>`
 const defaultJSONString = `{"root":{"children":[{"children":[{"detail":0,"format":11,"mode":"normal","style":"color: #e31616;","text":"hello world2222oooo","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":11,"textStyle":"color: #e31616;"}],"direction":"ltr","format":"","indent":0,"type":"root","version":1,"textFormat":11,"textStyle":"color: #e31616;"}}`
 const defaultText = 'Hello world'
@@ -297,9 +307,136 @@ function App() {
   const [disabled, setDisabled] = useState(false)
   const changePayloadRef = useRef<EditorOnChangePayload | null>(null)
 
+  const triggerSpecialShortcutMenus: SpecialShortcutMenuOption[] = [
+    {
+      primaryKeyword: 'Heading 1',
+      keywords: ['h1', 'H1'],
+      option: (
+        <button type='button' className='trigger-button'>
+          Heading 1
+        </button>
+      ),
+      onSelect: () => {
+        editorRef.current?.formatBlock('h1')
+      }
+    },
+    {
+      primaryKeyword: 'Heading 2',
+      keywords: ['h2', 'H2'],
+      option: (
+        <button type='button' className='trigger-button'>
+          Heading 2
+        </button>
+      ),
+      onSelect: () => {
+        editorRef.current?.formatBlock('h2')
+      }
+    },
+    {
+      primaryKeyword: 'Heading 3',
+      keywords: ['h3', 'H3'],
+      option: (
+        <button type='button' className='trigger-button'>
+          Heading 3
+        </button>
+      ),
+      onSelect: () => {
+        editorRef.current?.formatBlock('h3')
+      }
+    },
+    {
+      primaryKeyword: 'Bulleted List',
+      keywords: ['list'],
+      option: (
+        <button type='button' className='trigger-button'>
+          Bulleted List
+        </button>
+      ),
+      onSelect: () => {
+        editorRef.current?.formatBlock('bullet')
+      }
+    },
+    {
+      primaryKeyword: 'Numbered List',
+      keywords: ['list'],
+      option: (
+        <button type='button' className='trigger-button'>
+          Numbered List
+        </button>
+      ),
+      onSelect: () => {
+        editorRef.current?.formatBlock('number')
+      }
+    },
+    {
+      primaryKeyword: 'Highlight',
+      keywords: ['highlight'],
+      option: (
+        <button type='button' className='trigger-button'>
+          Highlight
+        </button>
+      ),
+      onSelect: () => {
+        editorRef.current?.formatHighlight()
+      }
+    },
+    {
+      primaryKeyword: 'Quote',
+      keywords: ['quote'],
+      option: (
+        <button type='button' className='trigger-button'>
+          Quote
+        </button>
+      ),
+      onSelect: () => {
+        editorRef.current?.formatBlock('quote')
+      }
+    },
+    {
+      primaryKeyword: 'Insert image',
+      keywords: ['add image'],
+      option: (
+        <button type='button' className='trigger-button'>
+          Insert image
+        </button>
+      ),
+      onSelect: () => {
+        editorRef.current?.insertImage({
+          src: defaultImage,
+          altText: 'The img alt text'
+        })
+      }
+    }
+  ]
+
   const handleOnChange: EditorProps['onChange'] = (payload) => {
     changePayloadRef.current = payload
     console.log(changePayloadRef.current)
+  }
+
+  const handleOnDragDropPasteFiles = (target: Array<File>) => {
+    if (target.length === 0) return false
+
+    console.log('onDragDropPasteFiles', target)
+
+    const allowImageFiles = target.filter((file) => file.type.startsWith('image/') && file.size <= 1.5 * 1024 * 1024)
+
+    if (allowImageFiles.length > 0) {
+      allowImageFiles.forEach((file) => {
+        imageFileToBase64(file).then((result) => {
+          if (result) {
+            editorRef.current?.insertImage({
+              src: result,
+              altText: file.name,
+              attributes: JSON.stringify({ time: Date.now().toString(), action: 'drag-drop' })
+            })
+          }
+        })
+      })
+      return true
+    }
+
+    return false
   }
 
   return (
@@ -348,11 +485,14 @@ function App() {
         fetchMention={fetchMention}
         ignoreSelectionChange
         onChange={handleOnChange}
+        onDragDropPasteFiles={handleOnDragDropPasteFiles}
         readOnly={readOnly}
         disabled={disabled}
         debug={true}
         maxLength={maxLength}
         ref={editorRef}
+        triggerSpecialShortcutKey='/'
+        triggerSpecialShortcutMenus={triggerSpecialShortcutMenus}
       />
       <div className='actions'>
         <button type='button' onClick={() => setReadOnly((prev) => !prev)}>

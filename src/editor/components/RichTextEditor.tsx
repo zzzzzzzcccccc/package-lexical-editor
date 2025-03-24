@@ -24,7 +24,9 @@ import {
   MentionPlugin,
   ImagePlugin,
   MediaPlugin,
-  IframePlugin
+  IframePlugin,
+  DragDropPasteFilesPlugin,
+  SpecialShortcutToolbarPlugin
 } from '../plugins'
 import { EditorPlaceholder } from './EditorPlaceholder'
 import { useEditorContext } from '../hooks'
@@ -44,10 +46,13 @@ type RichTextEditorProps = Pick<
   | 'ignoreSelectionChange'
   | 'outputValueSource'
   | 'onChange'
+  | 'onDragDropPasteFiles'
   | 'maxLength'
   | 'enableMarkdownShortcut'
   | 'enableDraggableBlock'
   | 'fetchMention'
+  | 'triggerSpecialShortcutKey'
+  | 'triggerSpecialShortcutMenus'
 >
 
 export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props, ref) => {
@@ -63,7 +68,10 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
     maxLength = -1,
     enableMarkdownShortcut = true,
     enableDraggableBlock = true,
+    triggerSpecialShortcutKey = '/',
+    triggerSpecialShortcutMenus = [],
     onChange,
+    onDragDropPasteFiles,
     fetchMention
   } = props
 
@@ -82,7 +90,23 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
     focus,
     blur,
     undo,
-    redo
+    redo,
+    formatBlock,
+    formatAlign,
+    formatFontColor,
+    formatBackgroundColor,
+    formatFontFamily,
+    formatFontSize,
+    formatLink,
+    formatBold,
+    formatItalic,
+    formatUnderline,
+    formatLowercase,
+    formatUppercase,
+    formatCapitalize,
+    formatStrikethrough,
+    formatHighlight,
+    formatCode,
   } = useEditorContext()
 
   const contentClassName = ['content', editorClassName].filter(Boolean).join(' ')
@@ -122,7 +146,23 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
     focus,
     blur,
     undo,
-    redo
+    redo,
+    formatBlock,
+    formatAlign,
+    formatFontColor,
+    formatBackgroundColor,
+    formatFontFamily,
+    formatFontSize,
+    formatLink,
+    formatBold,
+    formatItalic,
+    formatUnderline,
+    formatLowercase,
+    formatUppercase,
+    formatCapitalize,
+    formatStrikethrough,
+    formatHighlight,
+    formatCode
   }))
 
   return (
@@ -156,11 +196,15 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
       <ImagePlugin />
       <MediaPlugin />
       <IframePlugin />
+      <DragDropPasteFilesPlugin onDragDropPasteFiles={onDragDropPasteFiles} />
       {fetchMention ? <MentionPlugin fetchMention={fetchMention} /> : null}
       {Boolean(anchor && enableDraggableBlock) && <DraggableBlockPlugin anchor={anchor!} />}
       {anchor && <FloatLinkPlugin anchor={anchor} />}
       {maxLength > 0 && <MaxLengthPlugin maxLength={maxLength} />}
       {enableMarkdownShortcut && <MarkdownShortcutPlugin />}
+      {triggerSpecialShortcutMenus.length > 0 && (
+        <SpecialShortcutToolbarPlugin triggerKey={triggerSpecialShortcutKey} options={triggerSpecialShortcutMenus} />
+      )}
       <OnChangePlugin ignoreSelectionChange={ignoreSelectionChange} onChange={handleOnChange} />
     </>
   )

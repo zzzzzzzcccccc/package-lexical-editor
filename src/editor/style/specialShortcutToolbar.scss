@@ -1,17 +1,4 @@
-.root-lexical-editor {
-  span.editor-mention {
-    cursor: pointer;
-    color: #fff;
-    background-color: rgb(60, 132, 244);
-    border: 4px;
-    padding: 0 4px;
-    border-radius: 6px;
-    font-weight: 500;
-    margin: 0 2px;
-  }
-}
-
-.lexical-mention-menu {
+.lexical-special-shortcut-menu {
   width: 250px;
   max-height: 160px;
   overflow: auto;

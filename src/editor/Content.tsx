@@ -21,8 +21,11 @@ export const Content = forwardRef<EditorRef, ContentProps>((props, ref) => {
     maxLength,
     enableMarkdownShortcut,
     enableDraggableBlock,
+    triggerSpecialShortcutKey,
+    triggerSpecialShortcutMenus,
     fetchMention,
-    onChange
+    onChange,
+    onDragDropPasteFiles
   } = props
 
   const { onAnchor } = useEditorContext()
@@ -43,9 +46,12 @@ export const Content = forwardRef<EditorRef, ContentProps>((props, ref) => {
           outputValueSource={outputValueSource}
           maxLength={maxLength}
           onChange={onChange}
+          onDragDropPasteFiles={onDragDropPasteFiles}
           enableMarkdownShortcut={enableMarkdownShortcut}
           enableDraggableBlock={enableDraggableBlock}
           fetchMention={fetchMention}
+          triggerSpecialShortcutKey={triggerSpecialShortcutKey}
+          triggerSpecialShortcutMenus={triggerSpecialShortcutMenus}
           ref={ref}
         />
       </div>

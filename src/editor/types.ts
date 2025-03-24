@@ -44,6 +44,12 @@ export type FetchMentionOption = {
   selectOption: string | (() => React.ReactNode)
   attributes?: string | null
 }
+export type SpecialShortcutMenuOption = {
+  primaryKeyword: string
+  option: React.ReactNode
+  keywords: Array<string>
+  onSelect: (query: string | null) => void
+}
 
 export interface EditorProps {
   namespace: string
@@ -64,6 +70,9 @@ export interface EditorProps {
   ignoreSelectionChange?: boolean
   outputValueSource?: ValueSource
   onChange?: (payload: EditorOnChangePayload) => void
+  onDragDropPasteFiles?: (target: Array<File>) => boolean
+  triggerSpecialShortcutMenus?: Array<SpecialShortcutMenuOption>
+  triggerSpecialShortcutKey?: string
   maxLength?: number
   enableMarkdownShortcut?: boolean
   enableDraggableBlock?: boolean
@@ -79,6 +88,21 @@ export type EditorRef = Pick<
   | 'insertMedia'
   | 'insertIframe'
   | 'clearValue'
+  | 'formatBlock'
+  | 'formatAlign'
+  | 'formatFontColor'
+  | 'formatBackgroundColor'
+  | 'formatFontFamily'
+  | 'formatFontSize'
+  | 'formatLink'
+  | 'formatBold'
+  | 'formatItalic'
+  | 'formatUnderline'
+  | 'formatLowercase'
+  | 'formatUppercase'
+  | 'formatCapitalize'
+  | 'formatStrikethrough'
+  | 'formatHighlight'
   | 'focus'
   | 'blur'
   | 'undo'
