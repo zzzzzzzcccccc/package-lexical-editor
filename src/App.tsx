@@ -414,7 +414,8 @@ function App() {
   const variableMenus: VariableMenuOption[] = [
     {
       variable: '{{ person.name }}',
-      option: <span>Person Name</span>
+      option: <span>Person Name</span>,
+      attributes: JSON.stringify({ type: 'person', key: 'name' })
     },
     {
       variable: '{{ person.age }}',

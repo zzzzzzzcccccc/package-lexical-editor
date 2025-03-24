@@ -38,7 +38,7 @@ function Video(
       controls
       src={convertVideoUrl(props.src)}
       style={{ width: props.width, height: props.height }}
-      customer-attributes={props.attributes}
+      data-customer-attributes={props.attributes}
       playsInline
       draggable={false}
     />
@@ -58,7 +58,7 @@ function Audio(
       controls
       src={props.src}
       style={{ width: props.width, height: props.height }}
-      customer-attributes={props.attributes}
+      data-customer-attributes={props.attributes}
       playsInline
       draggable={false}
     />

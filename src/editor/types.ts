@@ -41,6 +41,7 @@ export type InsertMentionPayload = {
 }
 export type InsertVariablePayload = {
   variable: string
+  attributes?: string | null
 }
 export type FetchMentionOption = {
   mentionName: string
@@ -56,6 +57,7 @@ export type SpecialShortcutMenuOption = {
 export type VariableMenuOption = {
   variable: string
   option: React.ReactNode
+  attributes?: string | null
 }
 
 export interface EditorProps {

@@ -22,7 +22,7 @@ function $convertImageElement(domNode: Node): null | DOMConversionOutput {
     return null
   }
   const { alt: altText, src, width, height } = img
-  const attributes = img.getAttribute('customer-attributes') || null
+  const attributes = img.getAttribute('data-customer-attributes')
   const node = $createImageNode({ altText, height, src, width, attributes })
   return { node }
 }
@@ -113,7 +113,7 @@ export class ImageNode extends DecoratorNode<React.ReactNode> {
     element.setAttribute('width', this.__width.toString())
     element.setAttribute('height', this.__height.toString())
     if (this.__attributes) {
-      element.setAttribute('customer-attributes', this.__attributes)
+      element.setAttribute('data-customer-attributes', this.__attributes)
     }
     return { element }
   }

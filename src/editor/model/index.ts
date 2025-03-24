@@ -34,11 +34,13 @@ export class ShortcutMenuOption extends MenuOption {
 export class VariableOption extends MenuOption {
   variable: string
   option: React.ReactNode
+  attributes?: string | null
 
   constructor(item: VariableMenuOption) {
     super(item.variable)
 
     this.variable = item.variable
     this.option = item.option
+    this.attributes = item.attributes || null
   }
 }

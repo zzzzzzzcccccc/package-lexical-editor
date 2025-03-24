@@ -25,7 +25,7 @@ export function LazyImage(props: LazyImageProps) {
       alt={altText}
       className={className}
       style={{ width, height, maxWidth }}
-      customer-attributes={attributes}
+      data-customer-attributes={attributes}
       draggable='false'
     />
   )

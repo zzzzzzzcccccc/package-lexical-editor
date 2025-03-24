@@ -19,9 +19,10 @@ function $convertSpanElement(domNode: HTMLElement): null | DOMConversionOutput {
   }
 
   const variable = el?.textContent || el?.innerHTML
+  const attributes = el.getAttribute('data-customer-attributes')
 
   if (variable !== null) {
-    const node = $createVariableNode({ variable })
+    const node = $createVariableNode({ variable, attributes })
     return { node }
   }
 
@@ -31,19 +32,21 @@ function $convertSpanElement(domNode: HTMLElement): null | DOMConversionOutput {
 export type SerializedVariableNode = Spread<
   {
     variable: string
+    attributes?: string | null
   },
   SerializedTextNode
 >
 
 export class VariableNode extends TextNode {
   __variable: string
+  __attributes: string | null
 
   static getType(): string {
     return 'variable'
   }
 
   static clone(node: VariableNode): VariableNode {
-    return new VariableNode(node.__variable, node.__key)
+    return new VariableNode(node.__variable, node.__attributes, node.__key)
   }
 
   static importJSON(serializedNode: SerializedVariableNode) {
@@ -61,9 +64,10 @@ export class VariableNode extends TextNode {
     }
   }
 
-  constructor(variable: string, key?: NodeKey) {
+  constructor(variable: string, attributes?: string | null, key?: NodeKey) {
     super(variable, key)
     this.__variable = variable
+    this.__attributes = attributes || null
   }
 
   updateFromJSON(serializedNode: SerializedVariableNode) {
@@ -74,13 +78,17 @@ export class VariableNode extends TextNode {
     const element = document.createElement('span')
     element.setAttribute('data-lexical-variable', 'true')
     element.textContent = this.__variable
+    if (this.__attributes !== null) {
+      element.setAttribute('data-customer-attributes', this.__attributes)
+    }
     return { element }
   }
 
   exportJSON(): SerializedVariableNode {
     return {
       ...super.exportJSON(),
-      variable: this.__variable
+      variable: this.__variable,
+      attributes: this.__attributes
     }
   }
 
@@ -90,6 +98,9 @@ export class VariableNode extends TextNode {
     const className = theme.variable
     if (className !== undefined) {
       el.className = className
+    }
+    if (this.__attributes !== null) {
+      el.setAttribute('data-customer-attributes', this.__attributes)
     }
     el.spellcheck = false
     return el
@@ -116,8 +127,8 @@ export class VariableNode extends TextNode {
   }
 }
 
-export function $createVariableNode({ variable }: InsertVariablePayload & { key?: NodeKey }): VariableNode {
-  const node = new VariableNode(variable)
+export function $createVariableNode({ variable, attributes }: InsertVariablePayload & { key?: NodeKey }): VariableNode {
+  const node = new VariableNode(variable, attributes)
   node.setMode('token').toggleDirectionless()
   return $applyNodeReplacement(node)
 }

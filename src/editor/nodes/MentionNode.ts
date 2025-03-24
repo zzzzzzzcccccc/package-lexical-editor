@@ -18,8 +18,8 @@ function $convertSpanElement(domNode: HTMLElement): null | DOMConversionOutput {
     return null
   }
 
-  const mentionName = el.getAttribute('data-lexical-mention-name')
-  const attributes = el.getAttribute('customer-attributes') ?? null
+  const mentionName = el?.textContent || el?.innerHTML
+  const attributes = el.getAttribute('data-customer-attributes')
 
   if (mentionName !== null) {
     const node = $createMentionNode({ mentionName, attributes })
@@ -79,9 +79,8 @@ export class MentionNode extends TextNode {
     const element = document.createElement('span')
     element.setAttribute('data-lexical-mention', 'true')
     if (this.__attributes !== null) {
-      element.setAttribute('customer-attributes', this.__attributes)
+      element.setAttribute('data-customer-attributes', this.__attributes)
     }
-    element.setAttribute('data-lexical-mention-name', this.__mention)
     element.textContent = this.__mention
     return { element }
   }
@@ -102,7 +101,7 @@ export class MentionNode extends TextNode {
       el.className = className
     }
     if (this.__attributes !== null) {
-      el.setAttribute('customer-attributes', this.__attributes)
+      el.setAttribute('data-customer-attributes', this.__attributes)
     }
     el.spellcheck = false
     return el

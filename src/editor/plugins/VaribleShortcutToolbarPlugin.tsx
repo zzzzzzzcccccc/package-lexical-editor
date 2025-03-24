@@ -89,7 +89,8 @@ export function VaribleShortcutToolbarPlugin(props: VaribleShortcutToolbarPlugin
   ) => {
     activeEditor.update(() => {
       const variableNode = $createVariableNode({
-        variable: selectedOption.variable
+        variable: selectedOption.variable,
+        attributes: selectedOption.attributes
       })
       if (nodeToReplace) {
         nodeToReplace.replace(variableNode)

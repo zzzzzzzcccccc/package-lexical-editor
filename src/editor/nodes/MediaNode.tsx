@@ -24,7 +24,7 @@ function $convertAudioElement(domNode: Node): null | DOMConversionOutput {
   }
 
   const { src, style } = el
-  const attributes = el.getAttribute('customer-attributes') || null
+  const attributes = el.getAttribute('data-customer-attributes')
   const node = $createMediaNode({
     width: style?.width,
     height: style?.height,
@@ -32,7 +32,7 @@ function $convertAudioElement(domNode: Node): null | DOMConversionOutput {
     mediaType: MEDIA_NODE_TYPE.audio,
     attributes
   })
-  
+
   return { node }
 }
 
@@ -135,7 +135,7 @@ export class MediaNode extends DecoratorNode<React.ReactNode> {
       element.style.height = this.__height
     }
     if (this.__attributes) {
-      element.setAttribute('customer-attributes', this.__attributes)
+      element.setAttribute('data-customer-attributes', this.__attributes)
     }
     return { element }
   }
