@@ -263,6 +263,27 @@ function Footer() {
   )
 }
 
+function FloatToolbar() {
+  const { bold, underline, italic, link, formatBold, formatUnderline, formatItalic, formatLink } = useEditor()
+
+  return (
+    <div className='float-toolbar'>
+      <button type='button' className={bold ? 'active' : ''} onClick={formatBold}>
+        Bold
+      </button>
+      <button type='button' className={italic ? 'active' : ''} onClick={formatItalic}>
+        Italic
+      </button>
+      <button type='button' className={underline ? 'active' : ''} onClick={formatUnderline}>
+        Underline
+      </button>
+      <button type='button' className={link ? 'active' : ''} onClick={formatLink}>
+        Link
+      </button>
+    </div>
+  )
+}
+
 function fetchMention(query: string | null): Promise<Array<FetchMentionOption>> {
   return new Promise<Array<FetchMentionOption>>((resolve) => {
     setTimeout(() => {
@@ -520,6 +541,7 @@ function App() {
           headerSlot={<Toolbar />}
           editorClassName='editor-content'
           footerSlot={<Footer />}
+          floatMenuSlot={<FloatToolbar />}
           outputValueSource='html'
           fetchMention={fetchMention}
           ignoreSelectionChange

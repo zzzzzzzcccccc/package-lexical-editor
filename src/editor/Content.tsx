@@ -14,6 +14,7 @@ export const Content = forwardRef<EditorRef, ContentProps>((props, ref) => {
     autoFocus,
     headerSlot,
     footerSlot,
+    floatMenuSlot,
     editorClassName,
     editorStyle,
     ignoreSelectionChange,
@@ -43,6 +44,7 @@ export const Content = forwardRef<EditorRef, ContentProps>((props, ref) => {
           editorClassName={editorClassName}
           headerSlot={headerSlot}
           footerSlot={footerSlot}
+          floatMenuSlot={floatMenuSlot}
           ignoreSelectionChange={ignoreSelectionChange}
           outputValueSource={outputValueSource}
           maxLength={maxLength}

@@ -28,7 +28,8 @@ import {
   DragDropPasteFilesPlugin,
   SpecialShortcutToolbarPlugin,
   VariablePlugin,
-  VaribleShortcutToolbarPlugin
+  VaribleShortcutToolbarPlugin,
+  FloatMenuPlugin
 } from '../plugins'
 import { EditorPlaceholder } from './EditorPlaceholder'
 import { useEditorContext } from '../hooks'
@@ -45,6 +46,7 @@ type RichTextEditorProps = Pick<
   | 'editorClassName'
   | 'headerSlot'
   | 'footerSlot'
+  | 'floatMenuSlot'
   | 'ignoreSelectionChange'
   | 'outputValueSource'
   | 'onChange'
@@ -66,6 +68,7 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
     editorClassName,
     headerSlot,
     footerSlot,
+    floatMenuSlot,
     ignoreSelectionChange = true,
     outputValueSource = VALUE_SOURCE.html,
     maxLength = -1,
@@ -115,8 +118,8 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
     clearFormatting
   } = useEditorContext()
 
+  const edit = !disabled && !readOnly
   const contentClassName = ['content', editorClassName].filter(Boolean).join(' ')
-  const enableAutoFocus = autoFocus && !disabled && !readOnly
 
   const handleOnChange = (editorState: EditorState, editor: LexicalEditor) => {
     const isJSON = outputValueSource === VALUE_SOURCE.json
@@ -192,7 +195,7 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
         }
       />
       <HistoryPlugin />
-      {enableAutoFocus && <AutoFocusPlugin {...autoFocus} />}
+      {Boolean(autoFocus && edit) && <AutoFocusPlugin {...autoFocus} />}
       <ListenerFormatStatePlugin />
       <ListPlugin />
       <CheckListPlugin />
@@ -215,6 +218,7 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
         <SpecialShortcutToolbarPlugin triggerKey={triggerSpecialShortcutKey} options={triggerSpecialShortcutMenus} />
       )}
       {variableMenus.length > 0 && <VaribleShortcutToolbarPlugin options={variableMenus} />}
+      {Boolean(anchor && floatMenuSlot && edit) && <FloatMenuPlugin anchor={anchor!}>{floatMenuSlot}</FloatMenuPlugin>}
       <OnChangePlugin ignoreSelectionChange={ignoreSelectionChange} onChange={handleOnChange} />
     </>
   )

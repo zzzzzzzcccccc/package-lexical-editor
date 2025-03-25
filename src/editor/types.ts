@@ -76,6 +76,7 @@ export interface EditorProps {
   autoFocus?: EditorFocusOptions
   headerSlot?: React.ReactNode
   footerSlot?: React.ReactNode
+  floatMenuSlot?: React.ReactNode
   ignoreSelectionChange?: boolean
   outputValueSource?: ValueSource
   onChange?: (payload: EditorOnChangePayload) => void

@@ -77,3 +77,9 @@ body,
   cursor: pointer;
   text-align: left;
 }
+
+.float-toolbar{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
