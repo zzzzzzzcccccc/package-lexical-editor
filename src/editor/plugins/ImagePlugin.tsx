@@ -1,18 +1,11 @@
 import { useEffect, useCallback } from 'react'
 import { useEditorContext } from '../hooks'
 import { $wrapNodeInElement, mergeRegister } from '@lexical/utils'
-import {
-  $createParagraphNode,
-  $getSelection,
-  $insertNodes,
-  $isRangeSelection,
-  $isRootOrShadowRoot,
-  COMMAND_PRIORITY_EDITOR
-} from 'lexical'
+import { $getSelection, $insertNodes, $isRangeSelection, $isRootOrShadowRoot, COMMAND_PRIORITY_EDITOR } from 'lexical'
 
 import { CUSTOMER_LEXICAL_COMMAND } from '../constants'
 import { InsertImagePayload } from '../types'
-import { $createImageNode } from '../nodes'
+import { $createImageNode, $createParagraphNode } from '../nodes'
 import { getRangeSelectionInfo } from '../utils/getRangeSelectionInfo'
 
 export function ImagePlugin() {
