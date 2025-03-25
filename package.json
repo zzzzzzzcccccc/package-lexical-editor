@@ -31,7 +31,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "build:editor": "vite build --config vite.config.editor.ts"
+    "build:editor": "vite build --config vite.config.editor.ts",
+    "publish": "npm run build:editor && npm publish --access public"
   },
   "dependencies": {
     "@lexical/html": "^0.28.0",
