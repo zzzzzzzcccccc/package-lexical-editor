@@ -125,7 +125,7 @@ export const DEFAULT_THEME: EditorThemeClasses = {
 
 export const BLOCK = {
   root: 'Root',
-  passage: 'Normal',
+  paragraph: 'Normal',
   bullet: 'Bulleted List',
   check: 'Check List',
   code: 'Code Block',

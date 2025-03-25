@@ -16,7 +16,7 @@ const LazyEditor = React.lazy(() => import('./editor'))
 
 const maxLength = 10000
 const blockList = [
-  { name: `Normal (${SHORTCUTS_CONFIGURATION.paragraph})`, value: 'passage' },
+  { name: `Normal (${SHORTCUTS_CONFIGURATION.paragraph})`, value: 'paragraph' },
   { name: `H1 (${SHORTCUTS_CONFIGURATION.h1})`, value: 'h1' },
   { name: `H2 (${SHORTCUTS_CONFIGURATION.h2})`, value: 'h2' },
   { name: `H3 (${SHORTCUTS_CONFIGURATION.h3})`, value: 'h3' },

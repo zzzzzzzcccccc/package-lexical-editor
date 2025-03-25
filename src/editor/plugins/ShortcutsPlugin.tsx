@@ -36,7 +36,7 @@ export function ShortcutsPlugin() {
     (event: KeyboardEvent) => {
       if (isFormatParagraph(event)) {
         event.preventDefault()
-        formatBlock('passage')
+        formatBlock('paragraph')
 
         return true
       }

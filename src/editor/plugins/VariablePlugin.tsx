@@ -1,11 +1,18 @@
 import { useEffect, useCallback } from 'react'
 import { $wrapNodeInElement, mergeRegister } from '@lexical/utils'
-import { $getSelection, $insertNodes, $isRangeSelection, $isRootOrShadowRoot, COMMAND_PRIORITY_EDITOR } from 'lexical'
+import {
+  $createParagraphNode,
+  $getSelection,
+  $insertNodes,
+  $isRangeSelection,
+  $isRootOrShadowRoot,
+  COMMAND_PRIORITY_EDITOR
+} from 'lexical'
 
 import { useEditorContext } from '../hooks'
 import { CUSTOMER_LEXICAL_COMMAND } from '../constants'
 import { InsertVariablePayload } from '../types'
-import { $createVariableNode, $createParagraphNode } from '../nodes'
+import { $createVariableNode } from '../nodes'
 import { getRangeSelectionInfo } from '../utils/getRangeSelectionInfo'
 
 export function VariablePlugin() {

@@ -1,5 +1,6 @@
 import { useCallback, useState, useEffect } from 'react'
 import {
+  $createParagraphNode,
   $createTextNode,
   $getRoot,
   $getSelection,
@@ -39,7 +40,6 @@ import type {
   ValueSource
 } from '../types'
 import { intialEditorContext, type EditorContext } from '../context/EditorContext'
-import { $createParagraphNode } from '../nodes'
 import { sanitizeUrl } from '../utils/url'
 import { filterDomFromString } from '../utils/dom'
 import { getSelectedNode } from '../utils/getSelectedNode'
@@ -188,7 +188,7 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
         })
       }
 
-      if (target === 'passage') {
+      if (target === 'paragraph') {
         foramtParagraph()
 
         return

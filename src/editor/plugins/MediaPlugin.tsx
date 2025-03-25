@@ -1,11 +1,18 @@
 import { $wrapNodeInElement, mergeRegister } from '@lexical/utils'
 import { useEffect, useCallback } from 'react'
-import { $getSelection, $insertNodes, $isRangeSelection, $isRootOrShadowRoot, COMMAND_PRIORITY_EDITOR } from 'lexical'
+import {
+  $createParagraphNode,
+  $getSelection,
+  $insertNodes,
+  $isRangeSelection,
+  $isRootOrShadowRoot,
+  COMMAND_PRIORITY_EDITOR
+} from 'lexical'
 
 import { useEditorContext } from '../hooks'
 import { CUSTOMER_LEXICAL_COMMAND } from '../constants'
 import { InsertMediaPayload } from '../types'
-import { $createMediaNode, $createParagraphNode } from '../nodes'
+import { $createMediaNode } from '../nodes'
 import { getRangeSelectionInfo } from '../utils/getRangeSelectionInfo'
 
 export function MediaPlugin() {
