@@ -122,6 +122,8 @@ export type EditorRef = Pick<
   | 'redo'
 >
 
+export type PlainTextRef = Pick<EditorContext, 'insertValue' | 'updateValue' | 'clearValue' | 'focus' | 'blur'>  
+
 export type ContentProps = Omit<
   EditorProps,
   'onError' | 'theme' | 'nodes' | 'namespace' | 'editMode' | 'readOnly' | 'disabled'

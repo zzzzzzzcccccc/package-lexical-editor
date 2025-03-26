@@ -7,7 +7,8 @@ import {
   type EditorOnChangePayload,
   type FetchMentionOption,
   type SpecialShortcutMenuOption,
-  type VariableMenuOption
+  type VariableMenuOption,
+  type EditMode
 } from './editor'
 
 import './app.scss'
@@ -326,6 +327,7 @@ const defaultImage = `data:image/gif;base64,R0lGODlhPQBEAPeoAJosM//AwO/AwHVYZ/z5
 function App() {
   const editorRef = useRef<EditorRef>(null)
 
+  const [editMode, setEditMode] = useState<EditMode>('richText')
   const [readOnly, setReadOnly] = useState(false)
   const [disabled, setDisabled] = useState(false)
   const changePayloadRef = useRef<EditorOnChangePayload | null>(null)
@@ -536,7 +538,7 @@ function App() {
         <LazyEditor
           className='editor'
           namespace='playground'
-          editMode='richText'
+          editMode={editMode}
           autoFocus={{ defaultSelection: 'rootEnd' }}
           headerSlot={<Toolbar />}
           editorClassName='editor-content'
@@ -558,6 +560,12 @@ function App() {
         />
       </Suspense>
       <div className='actions'>
+        <button type='button' onClick={() => setEditMode('richText')}>
+          Rich Text
+        </button>
+        <button type='button' onClick={() => setEditMode('text')}>
+          Plain Text
+        </button>
         <button type='button' onClick={() => setReadOnly((prev) => !prev)}>
           {readOnly ? 'On' : 'Off'} readOnly
         </button>
