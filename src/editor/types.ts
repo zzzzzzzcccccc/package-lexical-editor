@@ -80,6 +80,7 @@ export interface EditorProps {
   ignoreSelectionChange?: boolean
   outputValueSource?: ValueSource
   onChange?: (payload: EditorOnChangePayload) => void
+  onPaste?: (event: ClipboardEvent) => boolean
   onDragDropPasteFiles?: (target: Array<File>) => boolean
   triggerSpecialShortcutMenus?: Array<SpecialShortcutMenuOption>
   triggerSpecialShortcutKey?: string

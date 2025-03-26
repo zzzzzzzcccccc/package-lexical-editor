@@ -11,6 +11,7 @@ import { useEditorContext } from '../hooks'
 import { EditorProps, PlainTextRef } from '../types'
 import { safeJSONStringify } from '../utils/json'
 import { VALUE_SOURCE } from '../constants'
+import { PastePlugin, DragDropPasteFilesPlugin } from '../plugins'
 
 type TextEditorProps = Pick<
   EditorProps,
@@ -21,14 +22,26 @@ type TextEditorProps = Pick<
   | 'editorClassName'
   | 'autoFocus'
   | 'onChange'
+  | 'onPaste'
+  | 'onDragDropPasteFiles'
   | 'maxLength'
   | 'ignoreSelectionChange'
   | 'outputValueSource'
 >
 
 export const TextEditor = forwardRef<PlainTextRef, TextEditorProps>((props, ref) => {
-  const { placeholder, headerSlot, footerSlot, editorStyle, editorClassName, autoFocus, outputValueSource, onChange } =
-    props
+  const {
+    placeholder,
+    headerSlot,
+    footerSlot,
+    editorStyle,
+    editorClassName,
+    autoFocus,
+    outputValueSource,
+    onChange,
+    onDragDropPasteFiles,
+    onPaste
+  } = props
   const { disabled, readOnly, updateContentLength, updateEmpty, updateValue, insertValue, focus, blur, clearValue } =
     useEditorContext()
 
@@ -85,6 +98,8 @@ export const TextEditor = forwardRef<PlainTextRef, TextEditorProps>((props, ref)
           </div>
         }
       />
+      <PastePlugin onPaste={onPaste} />
+      <DragDropPasteFilesPlugin onDragDropPasteFiles={onDragDropPasteFiles} />
       {Boolean(edit && autoFocus) && <AutoFocusPlugin {...autoFocus} />}
       <OnChangePlugin ignoreSelectionChange={props.ignoreSelectionChange} onChange={handleOnChange} />
     </>

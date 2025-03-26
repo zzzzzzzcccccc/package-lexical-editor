@@ -27,7 +27,8 @@ export const Content = forwardRef<EditorRef, ContentProps>((props, ref) => {
     variableMenus,
     fetchMention,
     onChange,
-    onDragDropPasteFiles
+    onDragDropPasteFiles,
+    onPaste
   } = props
 
   const { onAnchor, enableRichText, enableText } = useEditorContext()
@@ -50,6 +51,7 @@ export const Content = forwardRef<EditorRef, ContentProps>((props, ref) => {
             outputValueSource={outputValueSource}
             maxLength={maxLength}
             onChange={onChange}
+            onPaste={onPaste}
             onDragDropPasteFiles={onDragDropPasteFiles}
             enableMarkdownShortcut={enableMarkdownShortcut}
             enableDraggableBlock={enableDraggableBlock}
@@ -72,6 +74,8 @@ export const Content = forwardRef<EditorRef, ContentProps>((props, ref) => {
             ignoreSelectionChange={ignoreSelectionChange}
             outputValueSource={outputValueSource}
             onChange={onChange}
+            onPaste={onPaste}
+            onDragDropPasteFiles={onDragDropPasteFiles}
             ref={ref}
           />
         )}

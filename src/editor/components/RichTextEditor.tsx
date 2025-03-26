@@ -25,6 +25,7 @@ import {
   ImagePlugin,
   MediaPlugin,
   IframePlugin,
+  PastePlugin,
   DragDropPasteFilesPlugin,
   SpecialShortcutToolbarPlugin,
   VariablePlugin,
@@ -50,6 +51,7 @@ type RichTextEditorProps = Pick<
   | 'ignoreSelectionChange'
   | 'outputValueSource'
   | 'onChange'
+  | 'onPaste'
   | 'onDragDropPasteFiles'
   | 'maxLength'
   | 'enableMarkdownShortcut'
@@ -78,6 +80,7 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
     triggerSpecialShortcutMenus = [],
     variableMenus = [],
     onChange,
+    onPaste,
     onDragDropPasteFiles,
     fetchMention
   } = props
@@ -208,6 +211,7 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
       <MediaPlugin />
       <IframePlugin />
       <VariablePlugin />
+      <PastePlugin onPaste={onPaste} />
       <DragDropPasteFilesPlugin onDragDropPasteFiles={onDragDropPasteFiles} />
       {fetchMention ? <MentionPlugin fetchMention={fetchMention} /> : null}
       {Boolean(anchor && enableDraggableBlock) && <DraggableBlockPlugin anchor={anchor!} />}

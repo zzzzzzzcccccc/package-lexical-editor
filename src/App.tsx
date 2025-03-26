@@ -500,6 +500,11 @@ function App() {
     return false
   }
 
+  const handleOnPaste = (e: ClipboardEvent) => {
+    console.log(`handleOnPaste`, e)
+    return false
+  }
+
   return (
     <>
       <div className='github-corner'>
@@ -548,6 +553,7 @@ function App() {
           fetchMention={fetchMention}
           ignoreSelectionChange
           onChange={handleOnChange}
+          onPaste={handleOnPaste}
           onDragDropPasteFiles={handleOnDragDropPasteFiles}
           readOnly={readOnly}
           disabled={disabled}
