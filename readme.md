@@ -22,7 +22,7 @@ pnpm install awesome-lexical-react-editor
 
 ## Overview
 
-The `src/editor` component is a rich text editor built with React. It provides a variety of features for text formatting, image insertion, and more. This documentation will guide you through the usage and customization of the editor component.
+The component is a rich text editor built with React. It provides a variety of features for text formatting, image insertion, and more. This documentation will guide you through the usage and customization of the editor component.
 
 [Live Demo](https://zzzzzzzcccccc.github.io/package-lexical-editor/)
 
@@ -30,7 +30,7 @@ The `src/editor` component is a rich text editor built with React. It provides a
 
 ## Installation
 
-To use the `src/editor` component, you need to install the necessary dependencies. Ensure you have `react` and `react-dom` installed in your project.
+To use the component, you need to install the necessary dependencies. Ensure you have `react` and `react-dom` installed in your project.
 
 
 ## Simple Examlpe
@@ -109,53 +109,36 @@ export default App;
 
 ## React Props
 
-| Configuration | Type | Description |
-| --- | --- | --- |
-| `block` | `string` | Current block element type |
-| `bold` | `boolean` | Is bold |
-| `italic` | `boolean` | Is italic |
-| `underline` | `boolean` | Is underlined |
-| `lowercase` | `boolean` | Is lowercase |
-| `uppercase` | `boolean` | Is uppercase |
-| `capitalize` | `boolean` | Is capitalized |
-| `highlight` | `boolean` | Is highlighted |
-| `strikethrough` | `boolean` | Is strikethrough |
-| `code` | `boolean` | Is code block |
-| `link` | `string` | Link address |
-| `align` | `string` | Alignment |
-| `fontColor` | `string` | Font color |
-| `backgroundColor` | `string` | Background color |
-| `fontSize` | `string` | Font size |
-| `fontFamily` | `string` | Font family |
-| `disabled` | `boolean` | Is disabled |
-| `readOnly` | `boolean` | Is read-only |
-| `canRedo` | `boolean` | Can redo |
-| `canUndo` | `boolean` | Can undo |
-| `formatAlign` | `(align: string) => void` | Set alignment |
-| `formatFontColor` | `(color: string) => void` | Set font color |
-| `formatBackgroundColor` | `(color: string) => void` | Set background color |
-| `formatFontSize` | `(size: string) => void` | Set font size |
-| `formatFontFamily` | `(family: string) => void` | Set font family |
-| `formatBlock` | `(block: string) => void` | Set block element type |
-| `formatBold` | `() => void` | Set bold |
-| `formatItalic` | `() => void` | Set italic |
-| `formatLink` | `(link: string) => void` | Set link |
-| `formatUnderline` | `() => void` | Set underline |
-| `formatLowercase` | `() => void` | Set lowercase |
-| `formatUppercase` | `() => void` | Set uppercase |
-| `formatCapitalize` | `() => void` | Set capitalize |
-| `formatHighlight` | `() => void` | Set highlight |
-| `formatStrikethrough` | `() => void` | Set strikethrough |
-| `formatCode` | `() => void` | Set code block |
-| `clearFormatting` | `() => void` | Clear formatting |
-| `undo` | `() => void` | Undo |
-| `redo` | `() => void` | Redo |
-| `onChange` | `(payload: EditorOnChangePayload) => void` | Callback on content change |
-| `onDragDropPasteFiles` | `(files: File[]) => boolean` | Callback on drag, drop, or paste files |
-| `fetchMention` | `(query: string) => Promise<FetchMentionOption[]>` | Fetch mention options |
-| `triggerSpecialShortcutKey` | `string` | Special shortcut trigger character |
-| `triggerSpecialShortcutMenus` | `SpecialShortcutMenuOption[]` | Special shortcut menu options |
-| `variableMenus` | `VariableMenuOption[]` | Variable menu options |
+| Property                       | Type                                              | Description |
+|--------------------------------|-------------------------------------------------|-------------|
+| `namespace`                    | `string`                                        | The namespace of the editor, typically used to uniquely identify an instance. |
+| `className`                    | `string` _(optional)_                           | CSS class name for the outer container. |
+| `style`                        | `React.CSSProperties` _(optional)_              | Inline styles for the outer container. |
+| `editorClassName`              | `string` _(optional)_                           | CSS class name for the editor area. |
+| `editorStyle`                  | `React.CSSProperties` _(optional)_              | Inline styles for the editor area. |
+| `onError`                      | `(error: Error, editor: LexicalEditor) => void` _(optional)_ | Callback function for handling errors. |
+| `placeholder`                  | `React.ReactNode` _(optional)_                  | Placeholder content for the editor. |
+| `editMode`                     | `EditMode` _(optional)_                         | The editor mode. |
+| `readOnly`                     | `boolean` _(optional)_                          | Whether the editor is in read-only mode. |
+| `disabled`                     | `boolean` _(optional)_                          | Whether the editor is disabled. |
+| `theme`                        | `EditorThemeClasses` _(optional)_               | Theme configuration for the editor. |
+| `debug`                        | `boolean` _(optional)_                          | Whether to enable debug mode. |
+| `autoFocus`                    | `EditorFocusOptions` _(optional)_               | Whether to auto-focus the editor and focus options. |
+| `headerSlot`                   | `React.ReactNode` _(optional)_                  | Slot for custom header components. |
+| `footerSlot`                   | `React.ReactNode` _(optional)_                  | Slot for custom footer components. |
+| `floatMenuSlot`                | `React.ReactNode` _(optional)_                  | Slot for a floating menu. |
+| `ignoreSelectionChange`        | `boolean` _(optional)_                          | Whether to ignore selection change events. |
+| `outputValueSource`            | `ValueSource` _(optional)_                      | The source of the editor's output value. |
+| `onChange`                     | `(payload: EditorOnChangePayload) => void` _(optional)_ | Callback function triggered when the content changes. |
+| `onDragDropPasteFiles`         | `(target: Array<File>) => boolean` _(optional)_ | Callback for handling drag-and-drop or pasted files. Returns `true` if handled, `false` otherwise. |
+| `triggerSpecialShortcutMenus`  | `Array<SpecialShortcutMenuOption>` _(optional)_ | Configuration for triggering special shortcut menus. |
+| `triggerSpecialShortcutKey`    | `string` _(optional)_                           | Key for triggering special shortcut menus. |
+| `variableMenus`                | `Array<VariableMenuOption>` _(optional)_        | List of variable menu options. |
+| `maxLength`                    | `number` _(optional)_                           | Maximum character limit for input. |
+| `enableMarkdownShortcut`       | `boolean` _(optional)_                          | Whether to enable Markdown shortcuts. |
+| `enableDraggableBlock`         | `boolean` _(optional)_                          | Whether to enable draggable block elements. |
+| `modalAnchor`                  | `HTMLElement` _(optional)_                      | DOM node where modal dialogs should be anchored. |
+| `fetchMention`                 | `(query: string \| null) => Promise<Array<FetchMentionOption>>` _(optional)_ | Asynchronous function to fetch @ mention suggestions. |
 
 ## React component ref
 
