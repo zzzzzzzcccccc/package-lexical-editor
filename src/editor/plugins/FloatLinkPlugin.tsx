@@ -34,11 +34,13 @@ export interface FloatLinkEditorProps {
   enabled: boolean
   onCancel: () => void
   toggleEditLink: (target?: boolean) => void
+  formatLink: () => void
 }
 
 export interface FloatLinkViewProps {
   url: string
   onEdit?: () => void
+  onTrash?: () => void
 }
 
 export interface FloatLinkUpdateProps {
@@ -112,25 +114,31 @@ const FloatLinkUpdate = forwardRef<HTMLInputElement, FloatLinkUpdateProps>((prop
 })
 
 function FloatLinkView(props: FloatLinkViewProps) {
-  const { url, onEdit } = props
+  const { url, onEdit, onTrash } = props
 
   const handleOnEditLinkClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation()
     onEdit?.()
   }
 
+  const handleOnEditTrashClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation()
+    onTrash?.()
+  }
+
   return (
-    <div className='link-view'>
+    <div className='link-view' title={sanitizeUrl(url)}>
       <a href={sanitizeUrl(url)} target='_blank' rel='noopener noreferrer'>
         {url}
       </a>
       <button className='link-edit' type='button' onClick={handleOnEditLinkClick} />
+      <button className='link-trash' type='button' onClick={handleOnEditTrashClick} />
     </div>
   )
 }
 
 function FloatLinkEditor(props: FloatLinkEditorProps) {
-  const { editor, anchor, enabled, editLink, toggleEditLink, onCancel } = props
+  const { editor, anchor, enabled, editLink, toggleEditLink, formatLink, onCancel } = props
 
   const editorRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -203,6 +211,10 @@ function FloatLinkEditor(props: FloatLinkEditorProps) {
   const handleOnEdit = () => {
     setEditUrl(url)
     toggleEditLink(true)
+  }
+
+  const handleOnTrash = () => {
+    formatLink()
   }
 
   const handleOnChange = (value: string) => {
@@ -297,7 +309,7 @@ function FloatLinkEditor(props: FloatLinkEditorProps) {
           ref={inputRef}
         />
       ) : (
-        <FloatLinkView url={url} onEdit={handleOnEdit} />
+        <FloatLinkView url={url} onEdit={handleOnEdit} onTrash={handleOnTrash} />
       )}
     </div>
   )
@@ -305,7 +317,7 @@ function FloatLinkEditor(props: FloatLinkEditorProps) {
 
 export function FloatLinkPlugin(props: FloatLinkPluginProps) {
   const { anchor } = props
-  const { editLink, toggleEditLink, activeEditor, updateActiveEditor } = useEditorContext()
+  const { editLink, activeEditor, toggleEditLink, updateActiveEditor, formatLink } = useEditorContext()
 
   const [enabled, setEnabled] = useState(false)
 
@@ -388,6 +400,7 @@ export function FloatLinkPlugin(props: FloatLinkPluginProps) {
       editLink={editLink}
       toggleEditLink={toggleEditLink}
       onCancel={handleOnCancel}
+      formatLink={formatLink}
       anchor={anchor}
       editor={activeEditor}
       enabled={enabled}
