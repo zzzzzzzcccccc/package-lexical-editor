@@ -185,16 +185,18 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
         ErrorBoundary={LexicalErrorBoundary}
         placeholder={<EditorPlaceholder>{placeholder}</EditorPlaceholder>}
         contentEditable={
-          <div className='editor-wrapper'>
+          <>
             {headerSlot}
-            <ContentEditable
-              aria-disabled={disabled}
-              aria-readonly={readOnly}
-              className={contentClassName}
-              style={{ paddingLeft: enableDraggableBlock ? 20 : 6, ...editorStyle }}
-            />
+            <div className='editor-wrapper'>
+              <ContentEditable
+                aria-disabled={disabled}
+                aria-readonly={readOnly}
+                className={contentClassName}
+                style={{ paddingLeft: enableDraggableBlock ? 20 : 6, ...editorStyle }}
+              />
+            </div>
             {footerSlot}
-          </div>
+          </>
         }
       />
       <HistoryPlugin />

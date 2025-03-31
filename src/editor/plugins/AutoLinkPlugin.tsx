@@ -7,7 +7,7 @@ const URL_REGEX =
 const EMAIL_REGEX =
   /(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))/
 
-const PHONE_REGEX = /(?:\+?(\d{1,3}))?[-.\s]?(?:\(?\d{2,4}\)?[-.\s]?)?\d{3,4}[-.\s]?\d{4}/
+const PHONE_REGEX = /^\+?(\d{1,3})?[-.\s]?(\(\d{3}\)|\d{3})[-.\s]?\d{3}[-.\s]?\d{4}$/
 
 const MATCHERS = [
   createLinkMatcherWithRegExp(URL_REGEX, (text) => {

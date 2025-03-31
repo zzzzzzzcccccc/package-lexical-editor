@@ -5,6 +5,7 @@ import {
   $getRoot,
   $getSelection,
   $insertNodes,
+  $isParagraphNode,
   $isRangeSelection,
   $isTextNode,
   FORMAT_ELEMENT_COMMAND,
@@ -226,7 +227,6 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
         if (block === 'check') {
           foramtParagraph()
         } else {
-          console.log('run check list')
           activeEditor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, undefined)
         }
 
@@ -408,6 +408,8 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
           } else if ($isHeadingNode(node) || $isQuoteNode(node) || $isListNode(node) || $isListItemNode(node)) {
             node.replace($createParagraphNode(), true)
           } else if ($isDecoratorBlockNode(node)) {
+            node.setFormat('')
+          } else if ($isParagraphNode(node)) {
             node.setFormat('')
           }
         })

@@ -86,16 +86,18 @@ export const TextEditor = forwardRef<PlainTextRef, TextEditorProps>((props, ref)
         ErrorBoundary={LexicalErrorBoundary}
         placeholder={<EditorPlaceholder>{placeholder}</EditorPlaceholder>}
         contentEditable={
-          <div className='editor-wrapper'>
+          <>
             {headerSlot}
-            <ContentEditable
-              aria-disabled={disabled}
-              aria-readonly={readOnly}
-              className={contentClassName}
-              style={editorStyle}
-            />
+            <div className='editor-wrapper'>
+              <ContentEditable
+                aria-disabled={disabled}
+                aria-readonly={readOnly}
+                className={contentClassName}
+                style={editorStyle}
+              />
+            </div>
             {footerSlot}
-          </div>
+          </>
         }
       />
       <PastePlugin onPaste={onPaste} />
