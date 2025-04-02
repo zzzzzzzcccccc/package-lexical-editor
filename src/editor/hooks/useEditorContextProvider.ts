@@ -17,13 +17,7 @@ import {
 } from 'lexical'
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
 import { $patchStyleText, $setBlocksType } from '@lexical/selection'
-import {
-  $isListItemNode,
-  $isListNode,
-  INSERT_CHECK_LIST_COMMAND,
-  INSERT_ORDERED_LIST_COMMAND,
-  INSERT_UNORDERED_LIST_COMMAND
-} from '@lexical/list'
+import { INSERT_CHECK_LIST_COMMAND, INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND } from '@lexical/list'
 import { $createHeadingNode, $createQuoteNode, $isHeadingNode, $isQuoteNode, HeadingTagType } from '@lexical/rich-text'
 import { $isDecoratorBlockNode } from '@lexical/react/LexicalDecoratorBlockNode'
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link'
@@ -359,10 +353,6 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
     activeEditor.update(() => {
       const selection = $getSelection()
       if ($isRangeSelection(selection)) {
-        activeEditor.dispatchCommand(TOGGLE_LINK_COMMAND, null)
-        toggleEditLink(false)
-        toggleLink(false)
-
         const anchor = selection.anchor
         const focus = selection.focus
         const nodes = selection.getNodes()
@@ -405,7 +395,7 @@ export function useEditorContextProvider(options: EditorContextProviderOptions):
               $getNearestBlockElementAncestorOrThrow(textNode).setFormat('')
             }
             node = textNode
-          } else if ($isHeadingNode(node) || $isQuoteNode(node) || $isListNode(node) || $isListItemNode(node)) {
+          } else if ($isHeadingNode(node) || $isQuoteNode(node)) {
             node.replace($createParagraphNode(), true)
           } else if ($isDecoratorBlockNode(node)) {
             node.setFormat('')

@@ -88,6 +88,7 @@ export interface EditorProps {
   maxLength?: number
   enableMarkdownShortcut?: boolean
   enableDraggableBlock?: boolean
+  enableTabIndentation?: boolean
   modalAnchor?: HTMLElement
   fetchMention?: (query: string | null) => Promise<Array<FetchMentionOption>>
 }

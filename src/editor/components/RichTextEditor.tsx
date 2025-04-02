@@ -56,6 +56,7 @@ type RichTextEditorProps = Pick<
   | 'maxLength'
   | 'enableMarkdownShortcut'
   | 'enableDraggableBlock'
+  | 'enableTabIndentation'
   | 'fetchMention'
   | 'triggerSpecialShortcutKey'
   | 'triggerSpecialShortcutMenus'
@@ -76,6 +77,7 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
     maxLength = -1,
     enableMarkdownShortcut = true,
     enableDraggableBlock = true,
+    enableTabIndentation = false,
     triggerSpecialShortcutKey = '/',
     triggerSpecialShortcutMenus = [],
     variableMenus = [],
@@ -207,7 +209,6 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
       <LinkPlugin />
       <AutoLinkPlugin />
       <TabFocusPlugin />
-      <TabIndentationPlugin />
       <ShortcutsPlugin />
       <ImagePlugin />
       <MediaPlugin />
@@ -215,6 +216,7 @@ export const RichTextEditor = forwardRef<EditorRef, RichTextEditorProps>((props,
       <VariablePlugin />
       <PastePlugin onPaste={onPaste} />
       <DragDropPasteFilesPlugin onDragDropPasteFiles={onDragDropPasteFiles} />
+      {Boolean(enableTabIndentation && edit) && <TabIndentationPlugin />}
       {fetchMention ? <MentionPlugin fetchMention={fetchMention} /> : null}
       {Boolean(anchor && enableDraggableBlock) && <DraggableBlockPlugin anchor={anchor!} />}
       {anchor && <FloatLinkPlugin anchor={anchor} />}

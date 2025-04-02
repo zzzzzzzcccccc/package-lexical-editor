@@ -22,6 +22,7 @@ export const Content = forwardRef<EditorRef, ContentProps>((props, ref) => {
     maxLength,
     enableMarkdownShortcut,
     enableDraggableBlock,
+    enableTabIndentation,
     triggerSpecialShortcutKey,
     triggerSpecialShortcutMenus,
     variableMenus,
@@ -55,6 +56,7 @@ export const Content = forwardRef<EditorRef, ContentProps>((props, ref) => {
             onDragDropPasteFiles={onDragDropPasteFiles}
             enableMarkdownShortcut={enableMarkdownShortcut}
             enableDraggableBlock={enableDraggableBlock}
+            enableTabIndentation={enableTabIndentation}
             fetchMention={fetchMention}
             triggerSpecialShortcutKey={triggerSpecialShortcutKey}
             triggerSpecialShortcutMenus={triggerSpecialShortcutMenus}
